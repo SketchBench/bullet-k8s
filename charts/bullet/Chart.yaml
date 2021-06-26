@@ -1,6 +1,6 @@
 apiVersion: v2
 name: bullet
-version: 1.0.0
+version: 0.1.0
 appVersion: 1.4.1
 description: Bullet is a real-time query engine for very large data streams
 type: application
