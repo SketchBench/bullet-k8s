@@ -1,0 +1,34 @@
+apiVersion: v2
+name: bullet
+version: 1.0.0
+appVersion: 1.4.1
+description: Bullet is a real-time query engine for very large data streams
+type: application
+home: https://github.com/SketchBench/bullet-k8s
+# icon:
+maintainers:
+  - name: FraBle
+    email: contact@frank-blechschmidt.com
+    url: https://frank-blechschmidt.com
+sources:
+  - https://github.com/bullet-db
+  - https://bullet-db.github.io
+annotations:
+  artifacthub.io/signKey: |
+    fingerprint: F6F77B76587337D518F42D9CE720A2903AF94931
+    url: https://keybase.io/frable90/pgp_keys.asc
+keywords:
+  - apache
+  - bullet
+  - spark
+  - storm
+dependencies:
+  - name: kafka
+    version: 13.0.0
+    repository: https://charts.bitnami.com/bitnami
+  - name: kafdrop
+    version: 0.2.3
+    repository: https://bedag.github.io/helm-charts
+  - name: spark
+    version: 5.5.3
+    repository: https://charts.bitnami.com/bitnami
