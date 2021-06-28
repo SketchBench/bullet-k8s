@@ -1,0 +1,130 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "bullet.fullname" . }}
+  labels:
+    {{- include "bullet.labels" . | nindent 4 }}
+data:
+  bullet_spark_settings.yaml: |-
+    ########################################################################################################################
+    ################################################  Bullet Spark config ##################################################
+    ########################################################################################################################
+    # This is the name of the concrete implementation of Data Producer to use.
+    bullet.spark.data.producer.class.name: {{ .Values.bullet.sparkBackend.config.bullet.spark.data.producer.class.name | quote }}
+
+    # If true, enables the Bullet DSL data producer which can be configured to read from a custom data source. If enabled,
+    # the DSL data producer is used instead of the producer provided above. (See https://github.com/bullet-db/bullet-dsl)
+    bullet.spark.dsl.data.producer.enable: {{ .Values.bullet.sparkBackend.config.bullet.spark.dsl.data.producer.enable }}
+
+    # If true, enables the deserializer between the Bullet DSL connector and converter components. Otherwise, this step is
+    # skipped.
+    bullet.spark.dsl.deserializer.enable: {{ .Values.bullet.sparkBackend.config.bullet.spark.dsl.deserializer.enable }}
+
+    # This is the batch interval of your Spark Streaming job. Find out more at
+    # https://spark.apache.org/docs/latest/streaming-programming-guide.html#setting-the-right-batch-interval.
+    bullet.spark.batch.duration.ms: {{ .Values.bullet.sparkBackend.config.bullet.spark.batch.duration.ms }}
+
+    # This is the size of the buffer for accumulating queries in the Query Receiver before emitting to Spark.
+    bullet.spark.receiver.query.block.size: {{ .Values.bullet.sparkBackend.config.bullet.spark.receiver.query.block.size }}
+
+    # This is the maximum number of partitions that will be created by the Query Receiver.
+    bullet.spark.receiver.query.coalesce.partitions: {{ .Values.bullet.sparkBackend.config.bullet.spark.receiver.query.coalesce.partitions }}
+
+    # This is the number of Data Producers.
+    bullet.spark.data.producer.parallelism: {{ .Values.bullet.sparkBackend.config.bullet.spark.data.producer.parallelism }}
+
+    # This is the checkpoint directory. If you are running your Spark on a cluster, the directory must be an HDFS path.
+    bullet.spark.checkpoint.dir: {{ printf "hdfs://%s-hdfs:%g%s" .Release.Name .Values.bullet.sparkBackend.hdfs.port .Values.bullet.sparkBackend.config.bullet.spark.checkpoint.dir | quote}}
+
+    # If true, Bullet Spark recovers context from checkpoint files when restarting.
+    # Otherwise Bullet Spark creates a new context.
+    bullet.spark.recover.from.checkpoint.enable: {{ .Values.bullet.sparkBackend.config.bullet.spark.recover.from.checkpoint.enable }}
+
+    # This is the Spark application name.
+    bullet.spark.app.name: {{ .Values.bullet.sparkBackend.config.bullet.spark.app.name | quote }}
+
+    # If true, Bullet Spark collects metrics which can be accessed via the Spark REST API (/metrics/json).
+    bullet.spark.metrics.enabled: {{ .Values.bullet.sparkBackend.config.bullet.spark.metrics.enabled }}
+
+    # If true, enables parallel processing of queries in each partition of the Filter Streaming job, This is particularly
+    # useful when using Producers that are Direct (e.g. DirectKafkaProducer) and you would like to avoid repartitioning
+    # the data and instead choose to parallelize within each partition (fixed by the producer) instead.
+    # It speeds up the processing within those partitions by partitioning queries to multiple threads to do the filtering
+    # operation concurrently.
+    bullet.spark.filter.partition.parallel.mode.enabled: {{ .Values.bullet.sparkBackend.config.bullet.spark.filter.partition.parallel.mode.enabled }}
+
+    # This is the thread pool size to use when bullet.spark.filter.partition.parallel.mode.enabled is true.
+    bullet.spark.filter.partition.parallel.mode.parallelism: {{ .Values.bullet.sparkBackend.config.bullet.spark.filter.partition.parallel.mode.parallelism }}
+
+    # This is the minimum number of queries at which the parallel partition filtering is applied. Since there are fixed
+    # costs to manage a thread pool, they are only created once the number of queries exceeds this threshold.
+    # It is only used when bullet.spark.filter.partition.parallel.mode.enabled is true.
+    bullet.spark.filter.partition.parallel.mode.min.query.threshold: {{ .Values.bullet.sparkBackend.config.bullet.spark.filter.partition.parallel.mode.min.query.threshold }}
+
+    # The following 2 settings are used to set the checkpoint intervals independently for each stateful transformation.
+    # Checkpoint interval = Spark duration * checkpoint duration multiplier
+    # Use this to control the frequency of checkpointing operation. If this is set too high, there might be too much
+    # data to checkpoint (RDD lineage graph).
+    bullet.spark.query.union.checkpoint.duration.multiplier: {{ .Values.bullet.sparkBackend.config.bullet.spark.query.union.checkpoint.duration.multiplier }}
+    bullet.spark.join.checkpoint.duration.multiplier: {{ .Values.bullet.sparkBackend.config.bullet.spark.join.checkpoint.duration.multiplier }}
+
+    # The feedback publisher switches your PubSub into QUERY_SUBMISSION mode to loop back metadata messages to query
+    # receiver. If you need to change settings for your publisher in this mode that is different from the settings
+    # used in the result publisher, override them here. This setting needs to be a Map if provided.
+    # The example below pretends that your PubSub settings start with bullet.pubsub.custom. You will provide yours.
+    # Example:
+    #
+    # bullet.spark.loop.pubsub.overrides:
+    #   bullet.pubsub.custom.publisher.setting: 1
+    #   bullet.pubsub.custom.nested.publisher.setting:
+    #     foo: bar
+    #     bar: baz
+    bullet.spark.loop.pubsub.overrides: {}
+
+    ########################################################################################################################
+    ################################################ Spark Streaming config ################################################
+    ########################################################################################################################
+    # The following settings are passed to Spark directly. You can add more settings here.
+    # Find out more information about configuring a Spark job at https://spark.apache.org/docs/latest/configuration.html.
+    # Add configuration that change infrequently here and submit more variable settings while submitting the job on the
+    # command line.
+    spark.serializer: {{ .Values.bullet.sparkBackend.config.spark.serializer | quote }}
+    spark.closure.serializer: {{ .Values.bullet.sparkBackend.config.spark.closure.serializer | quote }}
+    spark.streaming.stopGracefullyOnShutdown: {{ .Values.bullet.sparkBackend.config.spark.streaming.stopGracefullyOnShutdown | quote }}
+    spark.streaming.receiver.writeAheadLog.enable: {{ .Values.bullet.sparkBackend.config.spark.streaming.receiver.writeAheadLog.enable | quote }}
+    spark.streaming.driver.writeAheadLog.allowBatching: {{ .Values.bullet.sparkBackend.config.spark.streaming.driver.writeAheadLog.allowBatching | quote }}
+
+    ########################################################################################################################
+    ################################################ Query PubSub config ###################################################
+    ########################################################################################################################
+    # This is the type of PubSub context to use for result publisher.
+    # The feedback publisher uses QUERY_SUBMISSION since it submits messages.
+    bullet.pubsub.context.name: {{ .Values.bullet.sparkBackend.config.bullet.pubsub.context.name | quote }}
+    # This is the name of the concrete implementation of PubSub to use.
+    # By default, it is the bulletin REST in-memory PubSub.
+    bullet.pubsub.class.name: {{ .Values.bullet.sparkBackend.config.bullet.pubsub.class.name | quote }}
+    # Add settings specific to your PubSub.
+    bullet.pubsub.kafka.bootstrap.servers: {{ .Values.bullet.sparkBackend.config.bullet.pubsub.kafka.bootstrap.servers | quote }}
+    bullet.pubsub.kafka.request.topic.name: {{ .Values.bullet.sparkBackend.config.bullet.pubsub.kafka.request.topic.name | quote }}
+    bullet.pubsub.kafka.response.topic.name: {{ .Values.bullet.sparkBackend.config.bullet.pubsub.kafka.response.topic.name | quote }}
+
+    ########################################################################################################################
+    ################################################ Bullet Core config ####################################################
+    ########################################################################################################################
+    ## You can also configure the core Bullet settings here. For documentation and defaults for those settings, refer to:
+    ## https://github.com/bullet-db/bullet-core/blob/master/src/main/resources/bullet_defaults.yaml
+    ########################################################################################################################
+    ########################################################################################################################
+    bullet.query.aggregation.raw.max.size: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.raw.max.size }}
+    # This setting is enforced in the API at this time
+    # bullet.query.aggregation.max.size: 1024
+    bullet.query.aggregation.count.distinct.sketch.entries: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.count.distinct.sketch.entries }}
+    bullet.query.aggregation.group.sketch.entries: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.group.sketch.entries }}
+    bullet.query.aggregation.distribution.sketch.entries: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.distribution.sketch.entries }}
+    bullet.query.aggregation.distribution.max.points: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.distribution.max.points }}
+    bullet.query.aggregation.distribution.generated.points.rounding: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.distribution.generated.points.rounding }}
+    bullet.query.aggregation.top.k.sketch.entries: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.top.k.sketch.entries }}
+    bullet.query.aggregation.top.k.sketch.error.type: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.top.k.sketch.error.type | quote }}
+    bullet.result.metadata.enable: {{ .Values.bullet.sparkBackend.config.bullet.result.metadata.enable }}
+    # Factory class to get new BulletRecords.
+    bullet.record.provider.class.name: {{ .Values.bullet.sparkBackend.config.bullet.record.provider.class.name | quote }}

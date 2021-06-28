@@ -1,0 +1,179 @@
+bullet:
+  sparkBackend:
+    jar: /opt/bitnami/spark/jars/bullet-spark-1.0.4-standalone.jar
+    otherJars: /opt/bitnami/spark/jars/bullet-kafka-1.2.2-fat.jar,/opt/bitnami/spark/jars/bullet-spark-example.jar
+    hdfsUser: hdfs
+    configDir: /bullet/configs
+    executorCores: 2
+    executorMemory: 3G
+    config:
+      # See https://github.com/bullet-db/bullet-spark/blob/master/src/main/resources/bullet_spark_defaults.yaml
+      ### Bullet ###
+      bullet:
+        ### Bullet Spark ###
+        spark:
+          data:
+            producer:
+              class:
+                name: com.yahoo.bullet.spark.examples.RandomProducer
+              parallelism: 1
+          dsl:
+            data:
+              producer:
+                enable: false
+            deserializer:
+              enable: false
+          batch:
+            duration:
+              ms: 1000
+          receiver:
+            query:
+              block:
+                size: 1
+              coalesce:
+                partitions: 10
+          checkpoint:
+            dir: /spark/checkpoints
+          recover:
+            from:
+              checkpoint:
+                enable: false
+          app:
+            name: "BulletSparkStreamingJob"
+          metrics:
+            enabled: false
+          filter:
+            partition:
+              parallel:
+                mode:
+                  enabled: false
+                  parallelism: 4
+                  min:
+                    query:
+                      threshold: 10
+          query:
+            union:
+              checkpoint:
+                duration:
+                  multiplier: 10
+          join:
+            checkpoint:
+              duration:
+                multiplier: 10
+          loop:
+            pubsub:
+              # todo: fix .Values.bullet.sparkBackend.config.bullet.spark.loop.pubsub.overrides
+              overrides: {}
+        ### Query PubSub ###
+        pubsub:
+          context:
+            name: QUERY_PROCESSING
+          class:
+            name: com.yahoo.bullet.kafka.KafkaPubSub
+          kafka:
+            bootstrap:
+              servers: "bullet-pubsub:9092"
+            request:
+              topic:
+                name: "bullet.requests"
+            response:
+              topic:
+                name: "bullet.responses"
+        ### Bullet Core ###
+        query:
+          aggregation:
+            raw:
+              max:
+                size: 500
+            count:
+              distinct:
+                sketch:
+                  entries: 16384
+            group:
+              sketch:
+                entries: 1024
+            distribution:
+              sketch:
+                entries: 1024
+              max:
+                points: 200
+              generated:
+                points:
+                  rounding: 6
+            top:
+              k:
+                sketch:
+                  entries: 1024
+                  error:
+                    type: "NFN"
+        result:
+          metadata:
+            enable: true
+        record:
+          provider:
+            class:
+              name: com.yahoo.bullet.record.simple.UntypedSimpleBulletRecordProvider
+      ### Spark Streaming ###
+      spark:
+        serializer: org.apache.spark.serializer.KryoSerializer
+        closure:
+          serializer: org.apache.spark.serializer.KryoSerializer
+        streaming:
+          stopGracefullyOnShutdown: true
+          receiver:
+            writeAheadLog:
+              enable: false
+          driver:
+            writeAheadLog:
+              allowBatching: false
+    image:
+      repository: sketchbench/bullet-spark
+      tag: latest
+      pullPolicy: Never # todo: replace
+    imagePullSecrets: []
+    imagePullPolicy: Always #todo: replace with IfNotPresent
+    nameOverride: ""
+    fullnameOverride: ""
+    podAnnotations: {}
+    podSecurityContext: {}
+    securityContext: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    resources: {}
+    service:
+      type: ClusterIP
+      port: 4040
+    driver:
+      port: 4041
+      blockManagerPort: 4042
+
+### Dependencies ###
+kafdrop:
+  timezone: America/Los_Angeles
+  config:
+    kafka:
+      connections:
+        - bullet-pubsub:9092
+      properties:
+        content: ""
+      truststore:
+        content: ""
+      keystore:
+        content: ""
+    jvm:
+      - -Xms128M
+      - -Xmx256M
+      - -Xss180K
+      - -XX:-TieredCompilation
+      - -XX:+UseStringDeduplication
+      - -noverify
+spark:
+  image:
+    registry: "" # todo: remove
+    repository: sketchbench/bullet-spark
+    tag: latest
+    pullPolicy: Never # todo: remove
+  worker:
+    replicaCount: 3
+    coreLimit: 3

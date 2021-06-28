@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bullet.fullname" . }}-spark-backend
+  labels:
+    {{- include "bullet.labels" . | nindent 4 }}
+    app.kubernetes.io/component: spark-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: spark-backend
+      {{- include "bullet.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.bullet.sparkBackend.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/component: spark-backend
+        {{- include "bullet.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.bullet.sparkBackend.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.bullet.sparkBackend.podSecurityContext | nindent 8 }}
+      containers:
+        - name: spark-backend
+          securityContext:
+            {{- toYaml .Values.bullet.sparkBackend.securityContext | nindent 12 }}
+          image: "{{ .Values.bullet.sparkBackend.image.repository }}:{{ .Values.bullet.sparkBackend.image.tag }}"
+          imagePullPolicy: {{ .Values.bullet.sparkBackend.image.pullPolicy }}
+          env:
+          - name: HADOOP_USER_NAME
+            value: {{ .Values.bullet.sparkBackend.hdfsUser }}
+          args:
+            - spark-submit
+            - --master
+            # https://github.com/bitnami/charts/blob/master/bitnami/spark/templates/_helpers.tpl
+            - {{ printf "spark://%s-spark-master-svc:%g" .Chart.Name .Values.bullet.sparkBackend.cluster.clusterPort }}
+            - --deploy-mode
+            - client
+            - --conf
+            - {{ printf "spark.driver.host=%s-spark-backend-driver" (include "bullet.fullname" .) }}
+            - --conf
+            - {{ printf "spark.driver.port=%g" .Values.bullet.sparkBackend.driver.port }}
+            - --conf
+            - {{ printf "spark.driver.blockManager.port=%g" .Values.bullet.sparkBackend.driver.blockManagerPort }}
+            - --conf
+            - spark.driver.bindAddress=0.0.0.0
+            - --conf
+            - {{ printf "spark.executor.cores=%g" .Values.bullet.sparkBackend.executorCores }}
+            - --conf
+            - {{ printf "spark.executor.memory=%s" .Values.bullet.sparkBackend.executorMemory }}
+            - --class
+            - com.yahoo.bullet.spark.BulletSparkStreamingMain
+            - --jars
+            - {{ .Values.bullet.sparkBackend.otherJars }}
+            - {{ .Values.bullet.sparkBackend.jar }}
+            - --bullet-spark-conf
+            - {{ printf "%s/bullet_spark_settings.yaml" .Values.bullet.sparkBackend.configDir }}
+          ports:
+            - name: spark-ui
+              containerPort: 4040
+              protocol: TCP
+            - name: driver
+              containerPort: {{ .Values.bullet.sparkBackend.driver.port }}
+              protocol: TCP
+            - name: block-manager
+              containerPort: {{ .Values.bullet.sparkBackend.driver.blockManagerPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              port: 4040
+              path: /
+          readinessProbe:
+            httpGet:
+              port: 4040
+              path: /
+          resources:
+            {{- toYaml .Values.bullet.sparkBackend.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: {{ printf "%s/bullet_spark_settings.yaml" .Values.bullet.sparkBackend.configDir }}
+              subPath: bullet_spark_settings.yaml
+      {{- with .Values.bullet.sparkBackend.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.bullet.sparkBackend.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.bullet.sparkBackend.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ include "bullet.fullname" . }}
+          optional: false

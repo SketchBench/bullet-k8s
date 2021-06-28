@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "bullet.fullname" . }}-spark-backend-driver
+  labels:
+    {{- include "bullet.labels" . | nindent 4 }}
+    app.kubernetes.io/component: spark-backend
+spec:
+  selector:
+    app.kubernetes.io/component: spark-backend
+    {{- include "bullet.selectorLabels" . | nindent 4 }}
+  type: ClusterIP
+  ports:
+  - name: driver
+    protocol: TCP
+    port: {{ .Values.bullet.sparkBackend.driver.port }}
+    targetPort: {{ .Values.bullet.sparkBackend.driver.port }}
+  - name: block-manager
+    protocol: TCP
+    port: {{ .Values.bullet.sparkBackend.driver.blockManagerPort }}
+    targetPort: {{ .Values.bullet.sparkBackend.driver.blockManagerPort }}

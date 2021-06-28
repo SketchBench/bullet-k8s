@@ -8,5 +8,8 @@ dependencies:
 - name: spark
   repository: https://charts.bitnami.com/bitnami
   version: 5.5.3
-digest: sha256:e16ff4888a95efcafc82796f5b8447d9b98f542721e837c5d5eb39ed9a6068d7
-generated: "2021-06-26T01:05:40.387302-07:00"
+- name: hdfs
+  repository: https://gradiant.github.io/charts
+  version: 0.1.10
+digest: sha256:f8af768739bfd1324d45839582d4fcdd0c82872f7041bbc946fe584d059c7b63
+generated: "2021-06-28T00:55:55.9788951-07:00"
