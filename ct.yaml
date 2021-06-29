@@ -5,5 +5,5 @@ chart-dirs:
 chart-repos:
   - bitnami=https://charts.bitnami.com/bitnami
   - bedag=https://bedag.github.io/helm-charts
-  - gaffer=https://gchq.github.io/gaffer-docker
+  - gradiant=https://gradiant.github.io/charts
 helm-extra-args: --timeout 600s
