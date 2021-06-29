@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bullet.fullname" . }}-web-service
+  labels:
+    {{- include "bullet.labels" . | nindent 4 }}
+    app.kubernetes.io/component: web-service
+spec:
+  {{- if not .Values.bullet.webservice.autoscaling.enabled }}
+  replicas: {{ .Values.bullet.webservice.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: web-service
+      {{- include "bullet.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.bullet.webservice.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/component: web-service
+        {{- include "bullet.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.bullet.webservice.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.bullet.webservice.podSecurityContext | nindent 8 }}
+      containers:
+        - name: web-service
+          securityContext:
+            {{- toYaml .Values.bullet.webservice.securityContext | nindent 12 }}
+          image: "{{ .Values.bullet.webservice.image.repository }}:{{ .Values.bullet.webservice.image.tag }}"
+          imagePullPolicy: {{ .Values.bullet.webservice.image.pullPolicy }}
+          args:
+            - java
+            - -Dloader.path=/usr/local/var/bullet/pubsub/bullet-kafka-fat.jar
+            - -jar
+            - bullet-service-embedded.jar
+            - {{ printf "--bullet.pubsub.config=%s/pubsub_config.yaml" .Values.bullet.webservice.configDir }}
+            - {{ printf "--bullet.query.config=%s/query_config.yaml" .Values.bullet.webservice.configDir }}
+            - {{ printf "--bullet.schema.file=%s/schema.json" .Values.bullet.webservice.configDir }}
+            - {{ printf "--server.port=%g" .Values.bullet.webservice.service.port }}
+          ports:
+            - name: service
+              containerPort: {{ .Values.bullet.webservice.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              port: {{ .Values.bullet.webservice.service.port }}
+              path: /api/bullet/columns
+          readinessProbe:
+            httpGet:
+              port: {{ .Values.bullet.webservice.service.port }}
+              path: /api/bullet/columns
+          resources:
+            {{- toYaml .Values.bullet.webservice.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: {{ .Values.bullet.webservice.configDir }}
+      {{- with .Values.bullet.webservice.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.bullet.webservice.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.bullet.webservice.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ include "bullet.fullname" . }}
+          items:
+          - key: bullet_webservice_pubsub_config.yaml
+            path: pubsub_config.yaml
+          - key: bullet_webservice_query_config.yaml
+            path: query_config.yaml
+          - key: bullet_webservice_schema.json
+            path: schema.json

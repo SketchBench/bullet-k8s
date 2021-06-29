@@ -102,4 +102,3 @@ spec:
       - name: config
         configMap:
           name: {{ include "bullet.fullname" . }}
-          optional: false

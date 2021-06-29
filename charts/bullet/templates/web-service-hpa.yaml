@@ -1,0 +1,29 @@
+{{- if .Values.bullet.webservice.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "bullet.fullname" . }}-web-service
+  labels:
+    {{- include "bullet.labels" . | nindent 4 }}
+    app.kubernetes.io/component: web-service
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "bullet.fullname" . }}-web-service
+  minReplicas: {{ .Values.bullet.webservice.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.bullet.webservice.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.bullet.webservice.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.bullet.webservice.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.bullet.webservice.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.bullet.webservice.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}
