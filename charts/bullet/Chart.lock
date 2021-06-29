@@ -11,5 +11,5 @@ dependencies:
 - name: hdfs
   repository: https://gradiant.github.io/charts
   version: 0.1.10
-digest: sha256:f8af768739bfd1324d45839582d4fcdd0c82872f7041bbc946fe584d059c7b63
-generated: "2021-06-28T00:55:55.9788951-07:00"
+digest: sha256:6459a735eabe0ac6854471578128b9947c4f480c071c805a1ed999a8275a8f12
+generated: "2021-06-29T00:44:49.7593291-07:00"
