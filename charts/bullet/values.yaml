@@ -7,7 +7,7 @@ bullet:
     image:
       repository: sketchbench/bullet-ui
       tag: latest
-      pullPolicy: Never # todo: replace
+      pullPolicy: Never  # todo: replace
     imagePullSecrets: []
     nameOverride: ""
     fullnameOverride: ""
@@ -43,7 +43,7 @@ bullet:
     image:
       repository: sketchbench/bullet-service
       tag: latest
-      pullPolicy: Never # todo: replace
+      pullPolicy: Never  # todo: replace
     imagePullSecrets: []
     nameOverride: ""
     fullnameOverride: ""
@@ -190,7 +190,7 @@ bullet:
     image:
       repository: sketchbench/bullet-spark
       tag: latest
-      pullPolicy: Never # todo: replace with IfNotPresent
+      pullPolicy: Never  # todo: replace with IfNotPresent
     imagePullSecrets: []
     nameOverride: ""
     fullnameOverride: ""
@@ -230,10 +230,10 @@ kafdrop:
       - -noverify
 spark:
   image:
-    registry: "" # todo: remove
+    registry: ""  # todo: remove
     repository: sketchbench/bullet-spark
     tag: latest
-    pullPolicy: Never # todo: remove
+    pullPolicy: Never  # todo: remove
   worker:
     replicaCount: 3
     coreLimit: 3
