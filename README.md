@@ -6,54 +6,38 @@
 
 #### Bullet UI
 
-    ```plain
     kubectl port-forward service/bullet-ui 8800:8800
-    ```
 
 #### Bullet Web Service
 
-    ```plain
     kubectl port-forward service/bullet-web-service 9999:9999
-    ```
 
 #### Bullet Spark Backend UI
 
-    ```plain
-    kubectl port-forward service/bullet-spark-backend-ui
- 4040:4040
-    ```
+    kubectl port-forward service/bullet-spark-backend-ui 4040:4040
 
 #### Spark Web UI
 
-    ```plain
     kubectl port-forward service/bullet-spark-master-svc 8000:80
-    ```
 
 #### HDFS Web UI
 
-    ```plain
     kubectl port-forward service/bullet-hdfs 5070:50070
-    ```
 
 #### Kafdrop (Kafka Web UI)
 
-    ```plain
     kubectl port-forward service/bullet-kafdrop 9000:9000
-    ```
 
 ### Kubernetes Dashboard for local development
 
 1. Add `kubernetes-dashboard` helm repo
 
-        ```plain
         helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-        ```
 
 2. Install `kubernetes-dashboard` helm chart
 
     Unix:
 
-        ```plain
         helm install \
         --namespace kubernetes-dashboard \
         --create-namespace \
@@ -62,11 +46,9 @@
         --set service.externalPort=8080 \
         kubernetes-dashboard \
         kubernetes-dashboard/kubernetes-dashboard
-        ```
 
     Windows:
 
-        ```plain
         helm install `
         --namespace kubernetes-dashboard `
         --create-namespace `
@@ -75,13 +57,10 @@
         --set service.externalPort=8080 `
         kubernetes-dashboard `
         kubernetes-dashboard/kubernetes-dashboard
-        ```
 
-3. Forward `kubernetes-dashboard` port to local host
+3. Forward `kubernetes-dashboard` port to localhost
 
-        ```plain
         kubectl port-forward -n kubernetes-dashboard service/kubernetes-dashboard 8000:8080
-        ```
 
 4. Profit
 
