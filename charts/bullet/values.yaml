@@ -7,7 +7,7 @@ bullet:
     image:
       repository: sketchbench/bullet-ui
       tag: latest
-      pullPolicy: Never  # todo: replace
+      pullPolicy: Always
     imagePullSecrets: []
     nameOverride: ""
     fullnameOverride: ""
@@ -43,7 +43,7 @@ bullet:
     image:
       repository: sketchbench/bullet-service
       tag: latest
-      pullPolicy: Never  # todo: replace
+      pullPolicy: Always
     imagePullSecrets: []
     nameOverride: ""
     fullnameOverride: ""
@@ -190,7 +190,7 @@ bullet:
     image:
       repository: sketchbench/bullet-spark
       tag: latest
-      pullPolicy: Never  # todo: replace with IfNotPresent
+      pullPolicy: Always
     imagePullSecrets: []
     nameOverride: ""
     fullnameOverride: ""
@@ -208,13 +208,45 @@ bullet:
       port: 4041
       blockManagerPort: 4042
 
-### Dependencies ###
+##### Other Bullet Components #####
+# Apache Spark (Streaming)
+spark:
+  image:
+    repository: sketchbench/bullet-spark
+    tag: latest
+    pullPolicy: Always
+  worker:
+    replicaCount: 3
+    coreLimit: 3
+# Apache Kafka as Bullet PubSub
+pubsub:
+  fullnameOverride: bullet-pubsub
+  zookeeper:
+    enabled: false
+  externalZookeeper:
+    servers:
+      - bullet-pubsub-zk
+pubsub-zk:
+  fullnameOverride: bullet-pubsub-zk
+# Apache Kafka as Bullet Data Ingestion (Data Interface)
+data-ingestion:
+  fullnameOverride: bullet-data-ingestion
+  zookeeper:
+    enabled: false
+  externalZookeeper:
+    servers:
+      - bullet-data-ingestion-zk
+data-ingestion-zk:
+  fullnameOverride: bullet-data-ingestion-zk
+##### Monitoring #####
+# Apache Kafka
 kafdrop:
   timezone: America/Los_Angeles
   config:
     kafka:
       connections:
         - bullet-pubsub:9092
+        - bullet-data-ingestion:9092
       properties:
         content: ""
       truststore:
@@ -228,12 +260,3 @@ kafdrop:
       - -XX:-TieredCompilation
       - -XX:+UseStringDeduplication
       - -noverify
-spark:
-  image:
-    registry: ""  # todo: remove
-    repository: sketchbench/bullet-spark
-    tag: latest
-    pullPolicy: Never  # todo: remove
-  worker:
-    replicaCount: 3
-    coreLimit: 3

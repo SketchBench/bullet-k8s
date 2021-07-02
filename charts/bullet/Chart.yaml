@@ -32,9 +32,21 @@ dependencies:
     import-values:
       - child: service
         parent: bullet.webservice.pubsub
-  - name: kafdrop
-    version: 0.2.3
-    repository: https://bedag.github.io/helm-charts
+  - name: zookeeper
+    version: 7.0.4
+    repository: https://charts.bitnami.com/bitnami
+    alias: pubsub-zk
+  - name: kafka
+    version: 13.0.2
+    repository: https://charts.bitnami.com/bitnami
+    alias: data-ingestion
+    import-values:
+      - child: service
+        parent: bullet.webservice.pubsub
+  - name: zookeeper
+    version: 7.0.4
+    repository: https://charts.bitnami.com/bitnami
+    alias: data-ingestion-zk
   - name: spark
     version: 5.5.3
     repository: https://charts.bitnami.com/bitnami
@@ -47,3 +59,7 @@ dependencies:
     import-values:
       - child: nameNode
         parent: bullet.sparkBackend.hdfs
+  ### Monitoring ###
+  - name: kafdrop
+    version: 0.2.3
+    repository: https://bedag.github.io/helm-charts
