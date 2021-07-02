@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "bullet.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default .Chart.Name .Values.bullet.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -11,10 +11,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 If release name contains chart name it will be used as a full name.
 */}}
 {{- define "bullet.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- if .Values.bullet.fullnameOverride }}
+{{- .Values.bullet.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- $name := default .Chart.Name .Values.bullet.nameOverride }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -54,9 +54,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "bullet.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "bullet.fullname" .) .Values.serviceAccount.name }}
+{{- if .Values.bullet.serviceAccount.create }}
+{{- default (include "bullet.fullname" .) .Values.bullet.serviceAccount.name }}
 {{- else }}
-{{- default "default" .Values.serviceAccount.name }}
+{{- default "default" .Values.bullet.serviceAccount.name }}
 {{- end }}
 {{- end }}

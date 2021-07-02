@@ -42,7 +42,7 @@ dependencies:
     alias: data-ingestion
     import-values:
       - child: service
-        parent: bullet.webservice.pubsub
+        parent: bullet.dataIngestionTester.kafka
   - name: zookeeper
     version: 7.0.4
     repository: https://charts.bitnami.com/bitnami

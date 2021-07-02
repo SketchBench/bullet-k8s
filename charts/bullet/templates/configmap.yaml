@@ -73,7 +73,7 @@ data:
   bullet_webservice_pubsub_config.yaml: |-
     bullet.pubsub.context.name: "QUERY_SUBMISSION"
     bullet.pubsub.class.name: "com.yahoo.bullet.kafka.KafkaPubSub"
-    bullet.pubsub.kafka.bootstrap.servers: {{ printf "%s-pubsub:%g" .Release.Name .Values.bullet.webservice.pubsub.port | quote}}
+    bullet.pubsub.kafka.bootstrap.servers: {{ printf "bullet-pubsub:%g" .Values.bullet.webservice.pubsub.port | quote}}
     bullet.pubsub.kafka.request.topic.name: {{ .Values.bullet.webservice.config.bullet.pubsub.kafka.request.topic.name | quote }}
     bullet.pubsub.kafka.response.topic.name: {{ .Values.bullet.webservice.config.bullet.pubsub.kafka.response.topic.name | quote }}
     bullet.pubsub.message.serde.class.name: "com.yahoo.bullet.pubsub.IdentityPubSubMessageSerDe"

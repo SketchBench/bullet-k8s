@@ -1,4 +1,10 @@
 bullet:
+  nameOverride: ""
+  fullnameOverride: ""
+  serviceAccount:
+    create: false
+    name: ""
+##### Bullet components based on templates #####
   ui:
     configDir: /usr/local/var/bullet/ui/config
     config:
@@ -9,8 +15,6 @@ bullet:
       tag: latest
       pullPolicy: Always
     imagePullSecrets: []
-    nameOverride: ""
-    fullnameOverride: ""
     podAnnotations: {}
     podSecurityContext: {}
     securityContext: {}
@@ -45,8 +49,6 @@ bullet:
       tag: latest
       pullPolicy: Always
     imagePullSecrets: []
-    nameOverride: ""
-    fullnameOverride: ""
     podAnnotations: {}
     podSecurityContext: {}
     securityContext: {}
@@ -192,8 +194,6 @@ bullet:
       tag: latest
       pullPolicy: Always
     imagePullSecrets: []
-    nameOverride: ""
-    fullnameOverride: ""
     podAnnotations: {}
     podSecurityContext: {}
     securityContext: {}
@@ -207,8 +207,23 @@ bullet:
     driver:
       port: 4041
       blockManagerPort: 4042
-
-##### Other Bullet Components #####
+  dataIngestionTester:
+    topic: sketchbench-test
+    numberMessages: 0 # unlimited
+    maxWaitingTime: 0.5 # seconds
+    image:
+      repository: sketchbench/sketchbench-data-ingestion-tester
+      tag: latest
+      pullPolicy: Always
+    imagePullSecrets: []
+    podAnnotations: {}
+    podSecurityContext: {}
+    securityContext: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    resources: {}
+##### Other Bullet components #####
 # Apache Spark (Streaming)
 spark:
   image:
