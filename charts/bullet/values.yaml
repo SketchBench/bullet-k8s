@@ -64,7 +64,7 @@ bullet:
       port: 9999
   sparkBackend:
     jar: /opt/bitnami/spark/jars/bullet-spark-standalone.jar
-    otherJars: /opt/bitnami/spark/jars/bullet-kafka-fat.jar,/opt/bitnami/spark/jars/bullet-dsl-fat.jar,/opt/bitnami/spark/jars/bullet-spark-example.jar
+    otherJars: /opt/bitnami/spark/jars/bullet-kafka-fat.jar,/opt/bitnami/spark/jars/bullet-dsl.jar,/opt/bitnami/spark/jars/bullet-spark-example.jar
     hdfsUser: hdfs
     configDir: /bullet/configs
     schemaDir: /bullet/schemas
@@ -153,7 +153,7 @@ bullet:
               key:
                 deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
               value:
-                deserializer: "org.apache.kafka.common.serialization.ByteArrayDeserializer"
+                deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
               enable:
                 auto:
                   commit: true
