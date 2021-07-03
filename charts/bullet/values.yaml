@@ -241,8 +241,29 @@ pubsub:
   externalZookeeper:
     servers:
       - bullet-pubsub-zk
+# Zookeeper as persistency for Apache Kafka (Bullet PubSub)
 pubsub-zk:
   fullnameOverride: bullet-pubsub-zk
+# Kafdrop as monitoring tool for Apache Kafka (Bullet PubSub)
+pubsub-monit:
+  timezone: America/Los_Angeles
+  config:
+    kafka:
+      connections:
+        - bullet-pubsub:9092
+      properties:
+        content: ""
+      truststore:
+        content: ""
+      keystore:
+        content: ""
+    jvm:
+      - -Xms128M
+      - -Xmx256M
+      - -Xss180K
+      - -XX:-TieredCompilation
+      - -XX:+UseStringDeduplication
+      - -noverify
 # Apache Kafka as Bullet Data Ingestion (Data Interface)
 data-ingestion:
   fullnameOverride: bullet-data-ingestion
@@ -251,16 +272,15 @@ data-ingestion:
   externalZookeeper:
     servers:
       - bullet-data-ingestion-zk
+# Zookeeper as persistency for Apache Kafka (Bullet Data Ingestion)
 data-ingestion-zk:
   fullnameOverride: bullet-data-ingestion-zk
-##### Monitoring #####
-# Apache Kafka
-kafdrop:
+# Kafdrop as monitoring tool for Apache Kafka (Bullet PubSub)
+data-ingestion-monit:
   timezone: America/Los_Angeles
   config:
     kafka:
       connections:
-        - bullet-pubsub:9092
         - bullet-data-ingestion:9092
       properties:
         content: ""

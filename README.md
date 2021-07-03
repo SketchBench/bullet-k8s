@@ -26,7 +26,13 @@
 
 #### Kafdrop (Kafka Web UI)
 
-    kubectl port-forward service/bullet-kafdrop 9000:9000
+Bullet PubSub:
+
+    kubectl port-forward service/bullet-pubsub-monit 9000:9000
+
+Bullet Data Ingestion:
+
+    kubectl port-forward service/bullet-data-ingestion-monit 9001:9000
 
 ### Kubernetes Dashboard for local development
 

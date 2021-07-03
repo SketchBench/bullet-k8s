@@ -36,6 +36,10 @@ dependencies:
     version: 7.0.4
     repository: https://charts.bitnami.com/bitnami
     alias: pubsub-zk
+  - name: kafdrop
+    version: 0.2.3
+    repository: https://bedag.github.io/helm-charts
+    alias: pubsub-monit
   - name: kafka
     version: 13.0.2
     repository: https://charts.bitnami.com/bitnami
@@ -47,6 +51,10 @@ dependencies:
     version: 7.0.4
     repository: https://charts.bitnami.com/bitnami
     alias: data-ingestion-zk
+  - name: kafdrop
+    version: 0.2.3
+    repository: https://bedag.github.io/helm-charts
+    alias: data-ingestion-monit
   - name: spark
     version: 5.5.3
     repository: https://charts.bitnami.com/bitnami
@@ -59,7 +67,3 @@ dependencies:
     import-values:
       - child: nameNode
         parent: bullet.sparkBackend.hdfs
-  ### Monitoring ###
-  - name: kafdrop
-    version: 0.2.3
-    repository: https://bedag.github.io/helm-charts
