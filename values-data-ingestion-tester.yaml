@@ -1,0 +1,163 @@
+bullet:
+  dataIngestionTester:
+    enabled: true
+    topic: sketchbench-test
+  sparkBackend:
+    config:
+      bullet:
+        spark:
+          dsl:
+            data:
+              producer:
+                enable: true
+            deserializer:
+              enable: false
+        dsl:
+          connector:
+            class:
+              name: com.yahoo.bullet.dsl.connector.KafkaConnector
+            kafka:
+              topics:
+                - sketchbench-test
+              bootstrap:
+                servers: bullet-data-ingestion:9092
+          converter:
+            class:
+              name: com.yahoo.bullet.dsl.converter.JSONBulletRecordConverter
+            schema:
+              type:
+                check:
+                  enable: false
+          deserializer:
+            class:
+              name: com.yahoo.bullet.dsl.deserializer.IdentityDeserializer
+    dsl:
+      schema: |
+        {
+          "fields": [
+            {
+              "name": "SketchBenchMessageID",
+              "type": "INTEGER"
+            },
+            {
+              "name": "SketchBenchBoolean",
+              "type": "BOOLEAN"
+            },
+            {
+              "name": "SketchBenchInteger",
+              "type": "INTEGER"
+            },
+            {
+              "name": "SketchBenchLong",
+              "type": "LONG"
+            },
+            {
+              "name": "SketchBenchFloat",
+              "type": "FLOAT"
+            },
+            {
+              "name": "SketchBenchDouble",
+              "type": "DOUBLE"
+            },
+            {
+              "name": "SketchBenchString",
+              "type": "STRING"
+            },
+            {
+              "name": "SketchBenchBooleanMap",
+              "type": "BOOLEAN_MAP"
+            },
+            {
+              "name": "SketchBenchIntegerMap",
+              "type": "INTEGER_MAP"
+            },
+            {
+              "name": "SketchBenchLongMap",
+              "type": "LONG_MAP"
+            },
+            {
+              "name": "SketchBenchFloatMap",
+              "type": "FLOAT_MAP"
+            },
+            {
+              "name": "SketchBenchDoubleMap",
+              "type": "DOUBLE_MAP"
+            },
+            {
+              "name": "SketchBenchStringMap",
+              "type": "STRING_MAP"
+            },
+            {
+              "name": "SketchBenchBooleanMapMap",
+              "type": "BOOLEAN_MAP_MAP"
+            },
+            {
+              "name": "SketchBenchIntegerMapMap",
+              "type": "INTEGER_MAP_MAP"
+            },
+            {
+              "name": "SketchBenchLongMapMap",
+              "type": "LONG_MAP_MAP"
+            },
+            {
+              "name": "SketchBenchFloatMapMap",
+              "type": "FLOAT_MAP_MAP"
+            },
+            {
+              "name": "SketchBenchDoubleMapMap",
+              "type": "DOUBLE_MAP_MAP"
+            },
+            {
+              "name": "SketchBenchStringMapMap",
+              "type": "STRING_MAP_MAP"
+            },
+            {
+              "name": "SketchBenchBooleanList",
+              "type": "BOOLEAN_LIST"
+            },
+            {
+              "name": "SketchBenchIntegerList",
+              "type": "INTEGER_LIST"
+            },
+            {
+              "name": "SketchBenchLongList",
+              "type": "LONG_LIST"
+            },
+            {
+              "name": "SketchBenchFloatList",
+              "type": "FLOAT_LIST"
+            },
+            {
+              "name": "SketchBenchDoubleList",
+              "type": "DOUBLE_LIST"
+            },
+            {
+              "name": "SketchBenchStringList",
+              "type": "STRING_LIST"
+            },
+            {
+              "name": "SketchBenchBooleanMapList",
+              "type": "BOOLEAN_MAP_LIST"
+            },
+            {
+              "name": "SketchBenchIntegerMapList",
+              "type": "INTEGER_MAP_LIST"
+            },
+            {
+              "name": "SketchBenchLongMapList",
+              "type": "LONG_MAP_LIST"
+            },
+            {
+              "name": "SketchBenchFloatMapList",
+              "type": "FLOAT_MAP_LIST"
+            },
+            {
+              "name": "SketchBenchDoubleMapList",
+              "type": "DOUBLE_MAP_LIST"
+            },
+            {
+              "name": "SketchBenchStringMapList",
+              "type": "STRING_MAP_LIST"
+            }
+          ]
+        }
