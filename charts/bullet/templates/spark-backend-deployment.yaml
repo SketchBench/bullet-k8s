@@ -86,6 +86,9 @@ spec:
             - name: config
               mountPath: {{ printf "%s/bullet_spark_settings.yaml" .Values.bullet.sparkBackend.configDir }}
               subPath: bullet_spark_settings.yaml
+            - name: config
+              mountPath: {{ printf "%s/dsl_schema.json" .Values.bullet.sparkBackend.schemaDir }}
+              subPath: dsl_schema.json
       {{- with .Values.bullet.sparkBackend.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

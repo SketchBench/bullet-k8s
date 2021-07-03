@@ -266,3 +266,53 @@ data:
     bullet.result.metadata.enable: {{ .Values.bullet.sparkBackend.config.bullet.result.metadata.enable }}
     # Factory class to get new BulletRecords.
     bullet.record.provider.class.name: {{ .Values.bullet.sparkBackend.config.bullet.record.provider.class.name | quote }}
+
+    ########################################################################################################################
+    ################################################ Bullet DSL config #####################################################
+    ########################################################################################################################
+    ## For documentation and defaults for those settings, refer to:
+    ## https://github.com/bullet-db/bullet-dsl/blob/master/src/main/resources/bullet_dsl_defaults.yaml
+    ########################################################################################################################
+    ########################################################################################################################
+    # The classpath to the BulletConnector to use
+    bullet.dsl.connector.class.name: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.class.name | quote }}
+    # The read timeout duration in ms (defaults to 0)
+    bullet.dsl.connector.read.timeout.ms: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.read.timeout.ms }}
+    # Whether or not to asynchronously commit messages (defaults to true)
+    bullet.dsl.connector.async.commit.enable: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.async.commit.enable }}
+
+    ###### KafkaConnector properties
+
+    # The list of Kafka topics to subscribe to (required)
+    bullet.dsl.connector.kafka.topics:
+    {{- range $topic := .Values.bullet.sparkBackend.config.bullet.dsl.connector.kafka.topics }}
+    - {{ $topic | quote }}
+    {{- end }}
+    # Whether or not the KafkaConsumer should seek to the end of its subscribed topics at initialization (defaults to false)
+    bullet.dsl.connector.kafka.start.at.end.enable: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.kafka.start.at.end.enable }}
+
+    # Kafka properties (prefixed by "bullet.dsl.connector.kafka.") are passed to KafkaConsumer during construction with the
+    # prefix removed. The properties below are required.
+    # Properties found at: https://kafka.apache.org/20/javadoc/org/apache/kafka/clients/consumer/ConsumerConfig.html
+    bullet.dsl.connector.kafka.bootstrap.servers: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.kafka.bootstrap.servers | quote }}
+    bullet.dsl.connector.kafka.group.id: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.kafka.group.id | quote }}
+    bullet.dsl.connector.kafka.key.deserializer: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.kafka.key.deserializer | quote }}
+    bullet.dsl.connector.kafka.value.deserializer: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.kafka.value.deserializer | quote }}
+
+    ###### BulletRecordConverter properties
+
+    # The classpath to the BulletRecordConverter to use
+    bullet.dsl.converter.class.name: {{ .Values.bullet.sparkBackend.config.bullet.dsl.converter.class.name | quote }}
+    # The path to the schema file to use
+    bullet.dsl.converter.schema.file: {{ .Values.bullet.sparkBackend.config.bullet.dsl.converter.schema.file | quote }}
+    # Should type checking be performed for fields with type in the schema. It is useful to make sure that the types in
+    # your source records match your expectations. You can set this to false when you are sure of your schema. This is
+    # ignored if you do not provide a schema.
+    bullet.dsl.converter.schema.type.check.enable: {{ .Values.bullet.sparkBackend.config.bullet.dsl.converter.schema.type.check.enable }}
+
+    ###### BulletDeserializer properties
+
+    # The classpath to the BulletDeserializer to use
+    bullet.dsl.deserializer.class.name: {{ .Values.bullet.sparkBackend.config.bullet.dsl.deserializer.class.name | quote }}
+  dsl_schema.json: |-
+{{ .Values.bullet.sparkBackend.dsl.schema | indent 4 }}

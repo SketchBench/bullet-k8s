@@ -4,7 +4,7 @@ bullet:
   serviceAccount:
     create: false
     name: ""
-##### Bullet components based on templates #####
+  ##### Bullet components based on templates #####
   ui:
     configDir: /usr/local/var/bullet/ui/config
     config:
@@ -13,7 +13,7 @@ bullet:
     image:
       repository: sketchbench/bullet-ui
       tag: latest
-      pullPolicy: Always
+      pullPolicy: IfNotPresent
     imagePullSecrets: []
     podAnnotations: {}
     podSecurityContext: {}
@@ -47,7 +47,7 @@ bullet:
     image:
       repository: sketchbench/bullet-service
       tag: latest
-      pullPolicy: Always
+      pullPolicy: IfNotPresent
     imagePullSecrets: []
     podAnnotations: {}
     podSecurityContext: {}
@@ -63,10 +63,11 @@ bullet:
       type: ClusterIP
       port: 9999
   sparkBackend:
-    jar: /opt/bitnami/spark/jars/bullet-spark-1.0.4-standalone.jar
-    otherJars: /opt/bitnami/spark/jars/bullet-kafka-1.2.2-fat.jar,/opt/bitnami/spark/jars/bullet-spark-example.jar
+    jar: /opt/bitnami/spark/jars/bullet-spark-standalone.jar
+    otherJars: /opt/bitnami/spark/jars/bullet-kafka-fat.jar,/opt/bitnami/spark/jars/bullet-dsl-fat.jar,/opt/bitnami/spark/jars/bullet-spark-example.jar
     hdfsUser: hdfs
     configDir: /bullet/configs
+    schemaDir: /bullet/schemas
     executorCores: 2
     executorMemory: 3G
     config:
@@ -127,6 +128,43 @@ bullet:
             pubsub:
               # todo: fix .Values.bullet.sparkBackend.config.bullet.spark.loop.pubsub.overrides
               overrides: {}
+        ### Bullet DSL (Kafka) ###
+        dsl:
+          connector:
+            class:
+              name:
+            read:
+              timeout:
+                ms: 0
+            async:
+              commit:
+                enable: true
+            kafka:
+              topics:
+                - ""
+              start:
+                at:
+                  end:
+                    enable: false
+              bootstrap:
+                servers: "localhost:9092"
+              group:
+                id: "bullet-consumer-group"
+              key:
+                deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+              value:
+                deserializer: "org.apache.kafka.common.serialization.ByteArrayDeserializer"
+          converter:
+            class:
+              name:
+            schema:
+              file: /bullet/schemas/dsl_schema.json
+              type:
+                check:
+                  enable: false
+          deserializer:
+            class:
+              name:
         ### Query PubSub ###
         pubsub:
           context:
@@ -189,10 +227,12 @@ bullet:
           driver:
             writeAheadLog:
               allowBatching: false
+    dsl:
+      schema: ""
     image:
       repository: sketchbench/bullet-spark
       tag: latest
-      pullPolicy: Always
+      pullPolicy: Never
     imagePullSecrets: []
     podAnnotations: {}
     podSecurityContext: {}
@@ -208,13 +248,14 @@ bullet:
       port: 4041
       blockManagerPort: 4042
   dataIngestionTester:
+    enabled: false
     topic: sketchbench-test
     numberMessages: 0 # unlimited
     maxWaitingTime: 0.5 # seconds
     image:
       repository: sketchbench/sketchbench-data-ingestion-tester
       tag: latest
-      pullPolicy: Always
+      pullPolicy: IfNotPresent
     imagePullSecrets: []
     podAnnotations: {}
     podSecurityContext: {}
@@ -229,7 +270,7 @@ spark:
   image:
     repository: sketchbench/bullet-spark
     tag: latest
-    pullPolicy: Always
+    pullPolicy: Never
   worker:
     replicaCount: 3
     coreLimit: 3
