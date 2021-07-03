@@ -12,7 +12,7 @@ bullet:
       schemaHost: http://localhost:9999
     image:
       repository: sketchbench/bullet-ui
-      tag: latest
+      tag: "1.1.0"
       pullPolicy: IfNotPresent
     imagePullSecrets: []
     podAnnotations: {}
@@ -46,7 +46,7 @@ bullet:
               size: 1024
     image:
       repository: sketchbench/bullet-service
-      tag: latest
+      tag: "1.1.0"
       pullPolicy: IfNotPresent
     imagePullSecrets: []
     podAnnotations: {}
@@ -234,8 +234,8 @@ bullet:
       schema: ""
     image:
       repository: sketchbench/bullet-spark
-      tag: latest
-      pullPolicy: Never
+      tag: "1.0.4"
+      pullPolicy: IfNotPresent
     imagePullSecrets: []
     podAnnotations: {}
     podSecurityContext: {}
@@ -257,7 +257,7 @@ bullet:
     maxWaitingTime: 0.5 # seconds
     image:
       repository: sketchbench/sketchbench-data-ingestion-tester
-      tag: latest
+      tag: "1.0.1"
       pullPolicy: IfNotPresent
     imagePullSecrets: []
     podAnnotations: {}
@@ -272,8 +272,8 @@ bullet:
 spark:
   image:
     repository: sketchbench/bullet-spark
-    tag: latest
-    pullPolicy: Never
+    tag: "1.0.4"
+    pullPolicy: IfNotPresent
   worker:
     replicaCount: 3
     coreLimit: 3
