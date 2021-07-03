@@ -266,7 +266,7 @@ data:
     bullet.result.metadata.enable: {{ .Values.bullet.sparkBackend.config.bullet.result.metadata.enable }}
     # Factory class to get new BulletRecords.
     bullet.record.provider.class.name: {{ .Values.bullet.sparkBackend.config.bullet.record.provider.class.name | quote }}
-
+    {{- if .Values.bullet.sparkBackend.config.bullet.spark.dsl.data.producer.enable }}
     ########################################################################################################################
     ################################################ Bullet DSL config #####################################################
     ########################################################################################################################
@@ -314,5 +314,6 @@ data:
 
     # The classpath to the BulletDeserializer to use
     bullet.dsl.deserializer.class.name: {{ .Values.bullet.sparkBackend.config.bullet.dsl.deserializer.class.name | quote }}
+    {{- end }}
   dsl_schema.json: |-
 {{ .Values.bullet.sparkBackend.dsl.schema | indent 4 }}
