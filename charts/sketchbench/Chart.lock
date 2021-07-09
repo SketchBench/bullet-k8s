@@ -5,5 +5,8 @@ dependencies:
 - name: kafdrop
   repository: https://bedag.github.io/helm-charts
   version: 0.2.3
-digest: sha256:e71d4c35c54e2e1fd88eed4987aacadc6e6122d896561dd95f76937ae7c6c14f
-generated: "2021-07-08T22:38:56.8157569-07:00"
+- name: spark
+  repository: https://charts.bitnami.com/bitnami
+  version: 5.6.1
+digest: sha256:1009b07822d630e9df0236aa90732c59fd48f1ffaf1e7127707e6e3254bc9c74
+generated: "2021-07-08T23:41:20.7962267-07:00"
