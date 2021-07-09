@@ -8,5 +8,8 @@ dependencies:
 - name: spark
   repository: https://charts.bitnami.com/bitnami
   version: 5.6.1
-digest: sha256:1009b07822d630e9df0236aa90732c59fd48f1ffaf1e7127707e6e3254bc9c74
-generated: "2021-07-08T23:41:20.7962267-07:00"
+- name: tobs
+  repository: https://charts.timescale.com
+  version: 0.5.0
+digest: sha256:1a581ced856c98676333bb51fc216f8eec5cec374465a6f12bacf62c3d79ab8e
+generated: "2021-07-08T23:49:25.6898922-07:00"

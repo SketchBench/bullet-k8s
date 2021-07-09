@@ -95,3 +95,13 @@ spark:
   worker:
     replicaCount: 3
     coreLimit: 3
+tobs:
+  enabled: false
+  kube-prometheus-stack:
+    alertmanager:
+      enabled: false  # not needed
+    prometheus-node-exporter:
+      hostRootFsMount: false  # for Windows (Docker Desktop)
+  timescaledb-single:
+    # Alternative: https://github.com/timescale/tobs/tree/master/chart#creating-secrets
+    unsafe: true
