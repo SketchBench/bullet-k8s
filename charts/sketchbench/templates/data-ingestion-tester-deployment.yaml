@@ -1,0 +1,64 @@
+{{- if .Values.dataIngestion.tester.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sketchbench.fullname" . }}-data-ingestion-tester
+  labels:
+    {{- include "sketchbench.labels" . | nindent 4 }}
+    app.kubernetes.io/component: data-ingestion-tester
+spec:
+  replicas: {{ .Values.dataIngestion.tester.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: data-ingestion-tester
+      {{- include "sketchbench.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.dataIngestion.tester.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/component: data-ingestion-tester
+        {{- include "sketchbench.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.dataIngestion.tester.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.dataIngestion.tester.podSecurityContext | nindent 8 }}
+      containers:
+        - name: data-ingestion-tester
+          securityContext:
+            {{- toYaml .Values.dataIngestion.tester.securityContext | nindent 12 }}
+          image: "{{ .Values.dataIngestion.tester.image.repository }}:{{ .Values.dataIngestion.tester.image.tag }}"
+          imagePullPolicy: {{ .Values.dataIngestion.tester.image.pullPolicy }}
+          args:
+            - poetry
+            - run
+            - sketchbench-data-ingestion-tester
+            # https://github.com/SketchBench/sketchbench-data-ingestion-tester#usage
+            - --server
+            - {{ printf "%s-kafka:%g" .Release.Name .Values.dataIngestion.kafka.port | quote }}
+            - --topic
+            - {{ .Values.dataIngestion.tester.topic | quote }}
+            - --number-messages
+            - {{ .Values.dataIngestion.tester.numberMessages | quote }}
+            - --max-waiting-time
+            - {{ .Values.dataIngestion.tester.maxWaitingTime | quote }}
+          resources:
+            {{- toYaml .Values.dataIngestion.tester.resources | nindent 12 }}
+      {{- with .Values.dataIngestion.tester.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.dataIngestion.tester.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.dataIngestion.tester.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

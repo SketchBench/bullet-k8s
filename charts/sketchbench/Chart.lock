@@ -1,0 +1,9 @@
+dependencies:
+- name: kafka
+  repository: https://charts.bitnami.com/bitnami
+  version: 13.0.2
+- name: kafdrop
+  repository: https://bedag.github.io/helm-charts
+  version: 0.2.3
+digest: sha256:e71d4c35c54e2e1fd88eed4987aacadc6e6122d896561dd95f76937ae7c6c14f
+generated: "2021-07-08T22:38:56.8157569-07:00"

@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "sketchbench.fullname" . }}-data-ingestion-espbench
+  labels:
+    {{- include "sketchbench.labels" . | nindent 4 }}
+    app.kubernetes.io/component: data-ingestion-espbench
+data:
+  datasender.conf: |-
+    kafka-producer-config.bootstrap-servers = {{ printf "%s-kafka:%g" .Release.Name .Values.dataIngestion.kafka.port | quote }}
+    kafka-producer-config.key-serializer-class = {{ .Values.dataIngestion.espbench.keySerializer | quote }}
+    kafka-producer-config.value-serializer-class = {{ .Values.dataIngestion.espbench.valueSerializer | quote }}
+    kafka-producer-config.acks = {{ .Values.dataIngestion.espbench.acks }}
+    kafka-producer-config.batch-size = {{ int .Values.dataIngestion.espbench.batchSize }} # default value in bytes
+    kafka-producer-config.buffer-memory-size = {{ int .Values.dataIngestion.espbench.bufferMemorySize }} # default value in bytes
+    kafka-producer-config.linger-time = {{ .Values.dataIngestion.espbench.lingerTime }} # default value in milliseconds
+
+    data-reader-config.data-input-path = ["/dataset/debs2012.txt"]
+    data-reader-config.read-in-ram = {{ .Values.dataIngestion.espbench.readinRam }}
+    verbose = {{ .Values.dataIngestion.espbench.verbose }}
+
+  commons.conf: |-
+    topic-prefix = {{ .Values.dataIngestion.espbench.topicPrefix | quote }}
+    benchmark-run = {{ .Values.dataIngestion.espbench.benchmarkRun }}
+    query-configs = [
+        {
+            name = "Identity"
+            number-of-streams = 1
+        }
+    ]
+    sending-interval = {{ .Values.dataIngestion.espbench.sendingInterval }}
+    sending-interval-time-unit = {{ .Values.dataIngestion.espbench.sendingIntervalTimeUnit | quote }} # Java Timeunit Enum
+    duration = {{ .Values.dataIngestion.espbench.duration }}
+    duration-time-unit = {{ .Values.dataIngestion.espbench.durationTimeUnit | quote }} # Java Timeunit Enum
+    kafka-bootstrap-servers = {{ printf "%s-kafka:%g" .Release.Name .Values.dataIngestion.kafka.port | quote }}
+    zookeeper-servers = {{ printf "%s-kafka-zookeeper:%g" .Release.Name .Values.dataIngestion.zookeeper.port | quote }}

@@ -1,0 +1,97 @@
+{{- if .Values.dataIngestion.espbench.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sketchbench.fullname" . }}-data-ingestion-espbench
+  labels:
+    {{- include "sketchbench.labels" . | nindent 4 }}
+    app.kubernetes.io/component: data-ingestion-espbench
+spec:
+  replicas: {{ .Values.dataIngestion.espbench.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: data-ingestion-espbench
+      {{- include "sketchbench.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.dataIngestion.espbench.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/component: data-ingestion-espbench
+        {{- include "sketchbench.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.dataIngestion.espbench.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.dataIngestion.espbench.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: data-ingestion-espbench-init
+          securityContext:
+            {{- toYaml .Values.dataIngestion.espbench.securityContext | nindent 12 }}
+          image: "{{ .Values.dataIngestion.espbench.initImage.repository }}:{{ .Values.dataIngestion.espbench.initImage.tag }}"
+          imagePullPolicy: {{ .Values.dataIngestion.espbench.initImage.pullPolicy }}
+          command:
+            - tar
+            - -xzf
+            - /data/debs2012.tar.gz
+            - -C
+            - /dataset
+          volumeMounts:
+            - name: dataset
+              mountPath: /dataset
+      containers:
+        - name: data-ingestion-espbench
+          securityContext:
+            {{- toYaml .Values.dataIngestion.espbench.securityContext | nindent 12 }}
+          image: "{{ .Values.dataIngestion.espbench.image.repository }}:{{ .Values.dataIngestion.espbench.image.tag }}"
+          imagePullPolicy: {{ .Values.dataIngestion.espbench.image.pullPolicy }}
+          env:
+          - name: JAVA_OPTS
+            value: {{ .Values.dataIngestion.espbench.javaOpts | quote }}
+          - name: _JAVA_OPTS
+            value: {{ .Values.dataIngestion.espbench.javaOpts | quote }}
+          - name: JVM_OPTS
+            value: {{ .Values.dataIngestion.espbench.javaOpts | quote }}
+          command:
+            - java
+            - -jar
+            - {{ .Values.dataIngestion.espbench.jar }}
+          resources:
+            {{- toYaml .Values.dataIngestion.espbench.resources | nindent 12 }}
+          volumeMounts:
+            - name: dataset
+              mountPath: /dataset
+            - name: config
+              mountPath: /sketchbench-data-ingestion-espbench/tools/datasender/datasender.conf
+              subPath: datasender.conf
+            - name: config
+              mountPath: /sketchbench-data-ingestion-espbench/tools/commons/commons.conf
+              subPath: commons.conf
+      {{- with .Values.dataIngestion.espbench.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.dataIngestion.espbench.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.dataIngestion.espbench.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: dataset
+          emptyDir: {}
+        - name: config
+          configMap:
+            name: {{ include "sketchbench.fullname" . }}-data-ingestion-espbench
+            items:
+            - key: datasender.conf
+              path: datasender.conf
+            - key: commons.conf
+              path: commons.conf
+{{- end }}

@@ -1,0 +1,88 @@
+global:
+  imageRegistry:
+  imagePullSecrets: []
+  nameOverride:
+  fullnameOverride:
+  commonLabels: {}
+  commonAnnotations: {}
+
+dataIngestion:
+  espbench:
+    enabled: false
+
+    jar: DataSender-assembly-0.1.0-SNAPSHOT.jar
+    javaOpts: -Xms1g
+    keySerializer: org.apache.kafka.common.serialization.StringSerializer
+    valueSerializer: org.apache.kafka.common.serialization.StringSerializer
+    acks: 1
+    batchSize: 16384
+    bufferMemorySize: 33554432
+    lingerTime: 0
+    readinRam: false
+    topicPrefix: SketchBench
+    benchmarkRun: 1
+    sendingInterval: 10000
+    sendingIntervalTimeUnit: NANOSECONDS
+    duration: 5
+    durationTimeUnit: MINUTES
+    verbose: true
+
+    replicaCount: 1
+    image:
+      repository: sketchbench/sketchbench-data-ingestion-espbench
+      pullPolicy: IfNotPresent
+      tag: "0.1.0"
+    initImage:
+      repository: sketchbench/sketchbench-data-ingestion-espbench-init
+      pullPolicy: IfNotPresent
+      tag: "0.1.0"
+    podAnnotations: {}
+    podSecurityContext: {}
+    securityContext: {}
+    resources: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+  tester:
+    enabled: false
+
+    topic: sketchbench-test
+    numberMessages: 0 # unlimited
+    maxWaitingTime: 0.5 # seconds
+
+    replicaCount: 1
+    image:
+      repository: sketchbench/sketchbench-data-ingestion-tester
+      pullPolicy: IfNotPresent
+      tag: "1.0.1"
+    podAnnotations: {}
+    podSecurityContext: {}
+    securityContext: {}
+    resources: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+
+kafka:
+  zookeeper:
+    nameOverride: kafka-zookeeper
+kafdrop:
+  nameOverride: kafka-monit
+  timezone: America/Los_Angeles
+  config:
+    kafka:
+      connections:
+        - kafka:9092
+      properties:
+        content: ""
+      truststore:
+        content: ""
+      keystore:
+        content: ""
+    jvm:
+      - -Xms128M
+      - -Xmx256M
+      - -Xss180K
+      - -XX:-TieredCompilation
+      - -XX:+UseStringDeduplication
+      - -noverify
