@@ -6,8 +6,8 @@ metadata:
     {{- include "bullet.labels" . | nindent 4 }}
     app.kubernetes.io/component: web-service
 spec:
-  {{- if not .Values.bullet.webservice.autoscaling.enabled }}
-  replicas: {{ .Values.bullet.webservice.replicaCount }}
+  {{- if not .Values.webservice.autoscaling.enabled }}
+  replicas: {{ .Values.webservice.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
@@ -15,7 +15,7 @@ spec:
       {{- include "bullet.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.bullet.webservice.podAnnotations }}
+      {{- with .Values.webservice.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -23,53 +23,53 @@ spec:
         app.kubernetes.io/component: web-service
         {{- include "bullet.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.bullet.webservice.imagePullSecrets }}
+      {{- with .Values.webservice.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        {{- toYaml .Values.bullet.webservice.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.webservice.podSecurityContext | nindent 8 }}
       containers:
         - name: web-service
           securityContext:
-            {{- toYaml .Values.bullet.webservice.securityContext | nindent 12 }}
-          image: "{{ .Values.bullet.webservice.image.repository }}:{{ .Values.bullet.webservice.image.tag }}"
-          imagePullPolicy: {{ .Values.bullet.webservice.image.pullPolicy }}
+            {{- toYaml .Values.webservice.securityContext | nindent 12 }}
+          image: "{{ .Values.webservice.image.repository }}:{{ .Values.webservice.image.tag }}"
+          imagePullPolicy: {{ .Values.webservice.image.pullPolicy }}
           args:
             - java
             - -Dloader.path=/usr/local/var/bullet/pubsub/bullet-kafka-fat.jar
             - -jar
             - bullet-service-embedded.jar
-            - {{ printf "--bullet.pubsub.config=%s/pubsub_config.yaml" .Values.bullet.webservice.configDir }}
-            - {{ printf "--bullet.query.config=%s/query_config.yaml" .Values.bullet.webservice.configDir }}
-            - {{ printf "--bullet.schema.file=%s/schema.json" .Values.bullet.webservice.configDir }}
-            - {{ printf "--server.port=%g" .Values.bullet.webservice.service.port }}
+            - {{ printf "--bullet.pubsub.config=%s/pubsub_config.yaml" .Values.webservice.configDir }}
+            - {{ printf "--bullet.query.config=%s/query_config.yaml" .Values.webservice.configDir }}
+            - {{ printf "--bullet.schema.file=%s/schema.json" .Values.webservice.configDir }}
+            - {{ printf "--server.port=%g" .Values.webservice.service.port }}
           ports:
             - name: service
-              containerPort: {{ .Values.bullet.webservice.service.port }}
+              containerPort: {{ .Values.webservice.service.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
-              port: {{ .Values.bullet.webservice.service.port }}
+              port: {{ .Values.webservice.service.port }}
               path: /api/bullet/columns
           readinessProbe:
             httpGet:
-              port: {{ .Values.bullet.webservice.service.port }}
+              port: {{ .Values.webservice.service.port }}
               path: /api/bullet/columns
           resources:
-            {{- toYaml .Values.bullet.webservice.resources | nindent 12 }}
+            {{- toYaml .Values.webservice.resources | nindent 12 }}
           volumeMounts:
             - name: config
-              mountPath: {{ .Values.bullet.webservice.configDir }}
-      {{- with .Values.bullet.webservice.nodeSelector }}
+              mountPath: {{ .Values.webservice.configDir }}
+      {{- with .Values.webservice.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.bullet.webservice.affinity }}
+      {{- with .Values.webservice.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.bullet.webservice.tolerations }}
+      {{- with .Values.webservice.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

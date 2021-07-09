@@ -9,9 +9,9 @@ spec:
   selector:
     app.kubernetes.io/component: ui
     {{- include "bullet.selectorLabels" . | nindent 4 }}
-  type: {{ .Values.bullet.ui.service.type }}
+  type: {{ .Values.ui.service.type }}
   ports:
   - name: ui
     protocol: TCP
-    port: {{ .Values.bullet.ui.service.port }}
-    targetPort: {{ .Values.bullet.ui.service.port }}
+    port: {{ .Values.ui.service.port }}
+    targetPort: {{ .Values.ui.service.port }}

@@ -13,7 +13,7 @@ spec:
       {{- include "bullet.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.bullet.sparkBackend.podAnnotations }}
+      {{- with .Values.sparkBackend.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -21,56 +21,56 @@ spec:
         app.kubernetes.io/component: spark-backend
         {{- include "bullet.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.bullet.sparkBackend.imagePullSecrets }}
+      {{- with .Values.sparkBackend.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        {{- toYaml .Values.bullet.sparkBackend.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.sparkBackend.podSecurityContext | nindent 8 }}
       containers:
         - name: spark-backend
           securityContext:
-            {{- toYaml .Values.bullet.sparkBackend.securityContext | nindent 12 }}
-          image: "{{ .Values.bullet.sparkBackend.image.repository }}:{{ .Values.bullet.sparkBackend.image.tag }}"
-          imagePullPolicy: {{ .Values.bullet.sparkBackend.image.pullPolicy }}
+            {{- toYaml .Values.sparkBackend.securityContext | nindent 12 }}
+          image: "{{ .Values.sparkBackend.image.repository }}:{{ .Values.sparkBackend.image.tag }}"
+          imagePullPolicy: {{ .Values.sparkBackend.image.pullPolicy }}
           env:
           - name: HADOOP_USER_NAME
-            value: {{ .Values.bullet.sparkBackend.hdfsUser }}
+            value: {{ .Values.sparkBackend.hdfsUser }}
           args:
             - spark-submit
             - --master
             # https://github.com/bitnami/charts/blob/master/bitnami/spark/templates/_helpers.tpl
-            - {{ printf "spark://%s-spark-master-svc:%g" .Chart.Name .Values.bullet.sparkBackend.cluster.clusterPort }}
+            - {{ printf "spark://%s-spark-master-svc:%g" .Release.Name .Values.sparkBackend.cluster.clusterPort }}
             - --deploy-mode
             - client
             - --conf
             - {{ printf "spark.driver.host=%s-spark-backend-driver" (include "bullet.fullname" .) }}
             - --conf
-            - {{ printf "spark.driver.port=%g" .Values.bullet.sparkBackend.driver.port }}
+            - {{ printf "spark.driver.port=%g" .Values.sparkBackend.driver.port }}
             - --conf
-            - {{ printf "spark.driver.blockManager.port=%g" .Values.bullet.sparkBackend.driver.blockManagerPort }}
+            - {{ printf "spark.driver.blockManager.port=%g" .Values.sparkBackend.driver.blockManagerPort }}
             - --conf
             - spark.driver.bindAddress=0.0.0.0
             - --conf
-            - {{ printf "spark.executor.cores=%g" .Values.bullet.sparkBackend.executorCores }}
+            - {{ printf "spark.executor.cores=%g" .Values.sparkBackend.executorCores }}
             - --conf
-            - {{ printf "spark.executor.memory=%s" .Values.bullet.sparkBackend.executorMemory }}
+            - {{ printf "spark.executor.memory=%s" .Values.sparkBackend.executorMemory }}
             - --class
             - com.yahoo.bullet.spark.BulletSparkStreamingMain
             - --jars
-            - {{ .Values.bullet.sparkBackend.otherJars }}
-            - {{ .Values.bullet.sparkBackend.jar }}
+            - {{ .Values.sparkBackend.otherJars }}
+            - {{ .Values.sparkBackend.jar }}
             - --bullet-spark-conf
-            - {{ printf "%s/bullet_spark_settings.yaml" .Values.bullet.sparkBackend.configDir }}
+            - {{ printf "%s/bullet_spark_settings.yaml" .Values.sparkBackend.configDir }}
           ports:
             - name: spark-ui
               containerPort: 4040
               protocol: TCP
             - name: driver
-              containerPort: {{ .Values.bullet.sparkBackend.driver.port }}
+              containerPort: {{ .Values.sparkBackend.driver.port }}
               protocol: TCP
             - name: block-manager
-              containerPort: {{ .Values.bullet.sparkBackend.driver.blockManagerPort }}
+              containerPort: {{ .Values.sparkBackend.driver.blockManagerPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -81,23 +81,23 @@ spec:
               port: 4040
               path: /
           resources:
-            {{- toYaml .Values.bullet.sparkBackend.resources | nindent 12 }}
+            {{- toYaml .Values.sparkBackend.resources | nindent 12 }}
           volumeMounts:
             - name: config
-              mountPath: {{ printf "%s/bullet_spark_settings.yaml" .Values.bullet.sparkBackend.configDir }}
+              mountPath: {{ printf "%s/bullet_spark_settings.yaml" .Values.sparkBackend.configDir }}
               subPath: bullet_spark_settings.yaml
             - name: config
-              mountPath: {{ printf "%s/dsl_schema.json" .Values.bullet.sparkBackend.schemaDir }}
+              mountPath: {{ printf "%s/dsl_schema.json" .Values.sparkBackend.schemaDir }}
               subPath: dsl_schema.json
-      {{- with .Values.bullet.sparkBackend.nodeSelector }}
+      {{- with .Values.sparkBackend.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.bullet.sparkBackend.affinity }}
+      {{- with .Values.sparkBackend.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.bullet.sparkBackend.tolerations }}
+      {{- with .Values.sparkBackend.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

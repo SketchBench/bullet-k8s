@@ -9,9 +9,9 @@ spec:
   selector:
     app.kubernetes.io/component: web-service
     {{- include "bullet.selectorLabels" . | nindent 4 }}
-  type: {{ .Values.bullet.webservice.service.type }}
+  type: {{ .Values.webservice.service.type }}
   ports:
   - name: web-service
     protocol: TCP
-    port: {{ .Values.bullet.webservice.service.port }}
-    targetPort: {{ .Values.bullet.webservice.service.port }}
+    port: {{ .Values.webservice.service.port }}
+    targetPort: {{ .Values.webservice.service.port }}

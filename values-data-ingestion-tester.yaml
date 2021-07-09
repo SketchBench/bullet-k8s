@@ -1,7 +1,6 @@
-bullet:
-  dataIngestionTester:
+dataIngestion:
+  tester:
     enabled: true
-    topic: sketchbench-test
   sparkBackend:
     config:
       bullet:

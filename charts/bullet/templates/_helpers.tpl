@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "bullet.name" -}}
-{{- default .Chart.Name .Values.bullet.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default .Chart.Name .Values.global.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -11,10 +11,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 If release name contains chart name it will be used as a full name.
 */}}
 {{- define "bullet.fullname" -}}
-{{- if .Values.bullet.fullnameOverride }}
-{{- .Values.bullet.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- if .Values.global.fullnameOverride }}
+{{- .Values.global.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.bullet.nameOverride }}
+{{- $name := default .Chart.Name .Values.global.nameOverride }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -59,4 +59,17 @@ Create the name of the service account to use
 {{- else }}
 {{- default "default" .Values.bullet.serviceAccount.name }}
 {{- end }}
+{{- end }}
+
+{{/*
+  Kafdrop Configuration
+  Override Kafdrop broker connections rendering to include .Release.Name; based on:
+  https://github.com/helm/helm/issues/3558#issuecomment-369008047
+*/}}
+{{- define "kafdrop.connections" -}}
+    {{- $connections := $.Values.config.kafka.connections -}}
+    {{- if kindIs "slice" $.Values.config.kafka.connections }}
+        {{- $connections = ($.Values.config.kafka.connections | join ", ") -}}
+    {{- end }}
+    {{- printf "%s-%s" .Release.Name $connections -}}
 {{- end }}

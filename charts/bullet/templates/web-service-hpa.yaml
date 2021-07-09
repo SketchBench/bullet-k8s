@@ -1,4 +1,4 @@
-{{- if .Values.bullet.webservice.autoscaling.enabled }}
+{{- if .Values.webservice.autoscaling.enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
@@ -11,19 +11,19 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ include "bullet.fullname" . }}-web-service
-  minReplicas: {{ .Values.bullet.webservice.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.bullet.webservice.autoscaling.maxReplicas }}
+  minReplicas: {{ .Values.webservice.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.webservice.autoscaling.maxReplicas }}
   metrics:
-    {{- if .Values.bullet.webservice.autoscaling.targetCPUUtilizationPercentage }}
+    {{- if .Values.webservice.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: {{ .Values.bullet.webservice.autoscaling.targetCPUUtilizationPercentage }}
+        targetAverageUtilization: {{ .Values.webservice.autoscaling.targetCPUUtilizationPercentage }}
     {{- end }}
-    {{- if .Values.bullet.webservice.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- if .Values.webservice.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: {{ .Values.bullet.webservice.autoscaling.targetMemoryUtilizationPercentage }}
+        targetAverageUtilization: {{ .Values.webservice.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}

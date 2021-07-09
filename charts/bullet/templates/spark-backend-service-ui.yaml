@@ -9,9 +9,9 @@ spec:
   selector:
     app.kubernetes.io/component: spark-backend
     {{- include "bullet.selectorLabels" . | nindent 4 }}
-  type: {{ .Values.bullet.sparkBackend.service.type }}
+  type: {{ .Values.sparkBackend.service.type }}
   ports:
   - name: spark-ui
     protocol: TCP
-    port: {{ .Values.bullet.sparkBackend.service.port }}
+    port: {{ .Values.sparkBackend.service.port }}
     targetPort: 4040

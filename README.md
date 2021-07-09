@@ -30,10 +30,6 @@ Bullet PubSub:
 
     kubectl port-forward service/bullet-pubsub-monit 9000:9000
 
-Bullet Data Ingestion:
-
-    kubectl port-forward service/bullet-data-ingestion-monit 9001:9000
-
 ### Kubernetes Dashboard for local development
 
 1. Add `kubernetes-dashboard` helm repo

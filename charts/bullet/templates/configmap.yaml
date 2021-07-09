@@ -8,13 +8,13 @@ data:
   bullet_ui_env_settings.json: |-
     {
       "default": {
-        "queryHost": {{ .Values.bullet.ui.config.queryHost | quote }},
+        "queryHost": {{ .Values.ui.config.queryHost | quote }},
         "queryNamespace": "api/bullet/queries",
         "queryPath": "ws-query",
         "validationPath": "validate-query",
         "queryStompRequestChannel": "/server/request",
         "queryStompResponseChannel": "/client/response",
-        "schemaHost": {{ .Values.bullet.ui.config.schemaHost | quote }},
+        "schemaHost": {{ .Values.ui.config.schemaHost | quote }},
         "schemaNamespace": "api/bullet",
         "helpLinks": [
           {
@@ -73,12 +73,12 @@ data:
   bullet_webservice_pubsub_config.yaml: |-
     bullet.pubsub.context.name: "QUERY_SUBMISSION"
     bullet.pubsub.class.name: "com.yahoo.bullet.kafka.KafkaPubSub"
-    bullet.pubsub.kafka.bootstrap.servers: {{ printf "bullet-pubsub:%g" .Values.bullet.webservice.pubsub.port | quote}}
-    bullet.pubsub.kafka.request.topic.name: {{ .Values.bullet.webservice.config.bullet.pubsub.kafka.request.topic.name | quote }}
-    bullet.pubsub.kafka.response.topic.name: {{ .Values.bullet.webservice.config.bullet.pubsub.kafka.response.topic.name | quote }}
+    bullet.pubsub.kafka.bootstrap.servers: {{ printf "%s-pubsub:%g" .Release.Name .Values.pubsub.port | quote }}
+    bullet.pubsub.kafka.request.topic.name: {{ .Values.webservice.config.bullet.pubsub.kafka.request.topic.name | quote }}
+    bullet.pubsub.kafka.response.topic.name: {{ .Values.webservice.config.bullet.pubsub.kafka.response.topic.name | quote }}
     bullet.pubsub.message.serde.class.name: "com.yahoo.bullet.pubsub.IdentityPubSubMessageSerDe"
   bullet_webservice_query_config.yaml: |-
-    bullet.query.aggregation.max.size: {{ .Values.bullet.webservice.config.bullet.query.aggregation.max.size | int }}
+    bullet.query.aggregation.max.size: {{ .Values.webservice.config.bullet.query.aggregation.max.size | int }}
   bullet_webservice_schema.json: |-
     [
         {
@@ -147,63 +147,63 @@ data:
     ################################################  Bullet Spark config ##################################################
     ########################################################################################################################
     # This is the name of the concrete implementation of Data Producer to use.
-    bullet.spark.data.producer.class.name: {{ .Values.bullet.sparkBackend.config.bullet.spark.data.producer.class.name | quote }}
+    bullet.spark.data.producer.class.name: {{ .Values.sparkBackend.config.bullet.spark.data.producer.class.name | quote }}
 
     # If true, enables the Bullet DSL data producer which can be configured to read from a custom data source. If enabled,
     # the DSL data producer is used instead of the producer provided above. (See https://github.com/bullet-db/bullet-dsl)
-    bullet.spark.dsl.data.producer.enable: {{ .Values.bullet.sparkBackend.config.bullet.spark.dsl.data.producer.enable }}
+    bullet.spark.dsl.data.producer.enable: {{ .Values.sparkBackend.config.bullet.spark.dsl.data.producer.enable }}
 
     # If true, enables the deserializer between the Bullet DSL connector and converter components. Otherwise, this step is
     # skipped.
-    bullet.spark.dsl.deserializer.enable: {{ .Values.bullet.sparkBackend.config.bullet.spark.dsl.deserializer.enable }}
+    bullet.spark.dsl.deserializer.enable: {{ .Values.sparkBackend.config.bullet.spark.dsl.deserializer.enable }}
 
     # This is the batch interval of your Spark Streaming job. Find out more at
     # https://spark.apache.org/docs/latest/streaming-programming-guide.html#setting-the-right-batch-interval.
-    bullet.spark.batch.duration.ms: {{ .Values.bullet.sparkBackend.config.bullet.spark.batch.duration.ms }}
+    bullet.spark.batch.duration.ms: {{ .Values.sparkBackend.config.bullet.spark.batch.duration.ms }}
 
     # This is the size of the buffer for accumulating queries in the Query Receiver before emitting to Spark.
-    bullet.spark.receiver.query.block.size: {{ .Values.bullet.sparkBackend.config.bullet.spark.receiver.query.block.size }}
+    bullet.spark.receiver.query.block.size: {{ .Values.sparkBackend.config.bullet.spark.receiver.query.block.size }}
 
     # This is the maximum number of partitions that will be created by the Query Receiver.
-    bullet.spark.receiver.query.coalesce.partitions: {{ .Values.bullet.sparkBackend.config.bullet.spark.receiver.query.coalesce.partitions }}
+    bullet.spark.receiver.query.coalesce.partitions: {{ .Values.sparkBackend.config.bullet.spark.receiver.query.coalesce.partitions }}
 
     # This is the number of Data Producers.
-    bullet.spark.data.producer.parallelism: {{ .Values.bullet.sparkBackend.config.bullet.spark.data.producer.parallelism }}
+    bullet.spark.data.producer.parallelism: {{ .Values.sparkBackend.config.bullet.spark.data.producer.parallelism }}
 
     # This is the checkpoint directory. If you are running your Spark on a cluster, the directory must be an HDFS path.
-    bullet.spark.checkpoint.dir: {{ printf "hdfs://%s-hdfs:%g%s" .Release.Name .Values.bullet.sparkBackend.hdfs.port .Values.bullet.sparkBackend.config.bullet.spark.checkpoint.dir | quote}}
+    bullet.spark.checkpoint.dir: {{ printf "hdfs://%s-hdfs:%g%s" .Release.Name .Values.sparkBackend.hdfs.port .Values.sparkBackend.config.bullet.spark.checkpoint.dir | quote}}
 
     # If true, Bullet Spark recovers context from checkpoint files when restarting.
     # Otherwise Bullet Spark creates a new context.
-    bullet.spark.recover.from.checkpoint.enable: {{ .Values.bullet.sparkBackend.config.bullet.spark.recover.from.checkpoint.enable }}
+    bullet.spark.recover.from.checkpoint.enable: {{ .Values.sparkBackend.config.bullet.spark.recover.from.checkpoint.enable }}
 
     # This is the Spark application name.
-    bullet.spark.app.name: {{ .Values.bullet.sparkBackend.config.bullet.spark.app.name | quote }}
+    bullet.spark.app.name: {{ .Values.sparkBackend.config.bullet.spark.app.name | quote }}
 
     # If true, Bullet Spark collects metrics which can be accessed via the Spark REST API (/metrics/json).
-    bullet.spark.metrics.enabled: {{ .Values.bullet.sparkBackend.config.bullet.spark.metrics.enabled }}
+    bullet.spark.metrics.enabled: {{ .Values.sparkBackend.config.bullet.spark.metrics.enabled }}
 
     # If true, enables parallel processing of queries in each partition of the Filter Streaming job, This is particularly
     # useful when using Producers that are Direct (e.g. DirectKafkaProducer) and you would like to avoid repartitioning
     # the data and instead choose to parallelize within each partition (fixed by the producer) instead.
     # It speeds up the processing within those partitions by partitioning queries to multiple threads to do the filtering
     # operation concurrently.
-    bullet.spark.filter.partition.parallel.mode.enabled: {{ .Values.bullet.sparkBackend.config.bullet.spark.filter.partition.parallel.mode.enabled }}
+    bullet.spark.filter.partition.parallel.mode.enabled: {{ .Values.sparkBackend.config.bullet.spark.filter.partition.parallel.mode.enabled }}
 
     # This is the thread pool size to use when bullet.spark.filter.partition.parallel.mode.enabled is true.
-    bullet.spark.filter.partition.parallel.mode.parallelism: {{ .Values.bullet.sparkBackend.config.bullet.spark.filter.partition.parallel.mode.parallelism }}
+    bullet.spark.filter.partition.parallel.mode.parallelism: {{ .Values.sparkBackend.config.bullet.spark.filter.partition.parallel.mode.parallelism }}
 
     # This is the minimum number of queries at which the parallel partition filtering is applied. Since there are fixed
     # costs to manage a thread pool, they are only created once the number of queries exceeds this threshold.
     # It is only used when bullet.spark.filter.partition.parallel.mode.enabled is true.
-    bullet.spark.filter.partition.parallel.mode.min.query.threshold: {{ .Values.bullet.sparkBackend.config.bullet.spark.filter.partition.parallel.mode.min.query.threshold }}
+    bullet.spark.filter.partition.parallel.mode.min.query.threshold: {{ .Values.sparkBackend.config.bullet.spark.filter.partition.parallel.mode.min.query.threshold }}
 
     # The following 2 settings are used to set the checkpoint intervals independently for each stateful transformation.
     # Checkpoint interval = Spark duration * checkpoint duration multiplier
     # Use this to control the frequency of checkpointing operation. If this is set too high, there might be too much
     # data to checkpoint (RDD lineage graph).
-    bullet.spark.query.union.checkpoint.duration.multiplier: {{ .Values.bullet.sparkBackend.config.bullet.spark.query.union.checkpoint.duration.multiplier }}
-    bullet.spark.join.checkpoint.duration.multiplier: {{ .Values.bullet.sparkBackend.config.bullet.spark.join.checkpoint.duration.multiplier }}
+    bullet.spark.query.union.checkpoint.duration.multiplier: {{ .Values.sparkBackend.config.bullet.spark.query.union.checkpoint.duration.multiplier }}
+    bullet.spark.join.checkpoint.duration.multiplier: {{ .Values.sparkBackend.config.bullet.spark.join.checkpoint.duration.multiplier }}
 
     # The feedback publisher switches your PubSub into QUERY_SUBMISSION mode to loop back metadata messages to query
     # receiver. If you need to change settings for your publisher in this mode that is different from the settings
@@ -225,25 +225,25 @@ data:
     # Find out more information about configuring a Spark job at https://spark.apache.org/docs/latest/configuration.html.
     # Add configuration that change infrequently here and submit more variable settings while submitting the job on the
     # command line.
-    spark.serializer: {{ .Values.bullet.sparkBackend.config.spark.serializer | quote }}
-    spark.closure.serializer: {{ .Values.bullet.sparkBackend.config.spark.closure.serializer | quote }}
-    spark.streaming.stopGracefullyOnShutdown: {{ .Values.bullet.sparkBackend.config.spark.streaming.stopGracefullyOnShutdown | quote }}
-    spark.streaming.receiver.writeAheadLog.enable: {{ .Values.bullet.sparkBackend.config.spark.streaming.receiver.writeAheadLog.enable | quote }}
-    spark.streaming.driver.writeAheadLog.allowBatching: {{ .Values.bullet.sparkBackend.config.spark.streaming.driver.writeAheadLog.allowBatching | quote }}
+    spark.serializer: {{ .Values.sparkBackend.config.spark.serializer | quote }}
+    spark.closure.serializer: {{ .Values.sparkBackend.config.spark.closure.serializer | quote }}
+    spark.streaming.stopGracefullyOnShutdown: {{ .Values.sparkBackend.config.spark.streaming.stopGracefullyOnShutdown | quote }}
+    spark.streaming.receiver.writeAheadLog.enable: {{ .Values.sparkBackend.config.spark.streaming.receiver.writeAheadLog.enable | quote }}
+    spark.streaming.driver.writeAheadLog.allowBatching: {{ .Values.sparkBackend.config.spark.streaming.driver.writeAheadLog.allowBatching | quote }}
 
     ########################################################################################################################
     ################################################ Query PubSub config ###################################################
     ########################################################################################################################
     # This is the type of PubSub context to use for result publisher.
     # The feedback publisher uses QUERY_SUBMISSION since it submits messages.
-    bullet.pubsub.context.name: {{ .Values.bullet.sparkBackend.config.bullet.pubsub.context.name | quote }}
+    bullet.pubsub.context.name: {{ .Values.sparkBackend.config.bullet.pubsub.context.name | quote }}
     # This is the name of the concrete implementation of PubSub to use.
     # By default, it is the bulletin REST in-memory PubSub.
-    bullet.pubsub.class.name: {{ .Values.bullet.sparkBackend.config.bullet.pubsub.class.name | quote }}
+    bullet.pubsub.class.name: {{ .Values.sparkBackend.config.bullet.pubsub.class.name | quote }}
     # Add settings specific to your PubSub.
-    bullet.pubsub.kafka.bootstrap.servers: {{ .Values.bullet.sparkBackend.config.bullet.pubsub.kafka.bootstrap.servers | quote }}
-    bullet.pubsub.kafka.request.topic.name: {{ .Values.bullet.sparkBackend.config.bullet.pubsub.kafka.request.topic.name | quote }}
-    bullet.pubsub.kafka.response.topic.name: {{ .Values.bullet.sparkBackend.config.bullet.pubsub.kafka.response.topic.name | quote }}
+    bullet.pubsub.kafka.bootstrap.servers: {{ printf "%s-pubsub:%g" .Release.Name .Values.pubsub.port | quote }}
+    bullet.pubsub.kafka.request.topic.name: {{ .Values.sparkBackend.config.bullet.pubsub.kafka.request.topic.name | quote }}
+    bullet.pubsub.kafka.response.topic.name: {{ .Values.sparkBackend.config.bullet.pubsub.kafka.response.topic.name | quote }}
     bullet.pubsub.message.serde.class.name: "com.yahoo.bullet.pubsub.IdentityPubSubMessageSerDe"
 
     ########################################################################################################################
@@ -253,20 +253,20 @@ data:
     ## https://github.com/bullet-db/bullet-core/blob/master/src/main/resources/bullet_defaults.yaml
     ########################################################################################################################
     ########################################################################################################################
-    bullet.query.aggregation.raw.max.size: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.raw.max.size }}
+    bullet.query.aggregation.raw.max.size: {{ .Values.sparkBackend.config.bullet.query.aggregation.raw.max.size }}
     # This setting is enforced in the API at this time
     # bullet.query.aggregation.max.size: 1024
-    bullet.query.aggregation.count.distinct.sketch.entries: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.count.distinct.sketch.entries }}
-    bullet.query.aggregation.group.sketch.entries: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.group.sketch.entries }}
-    bullet.query.aggregation.distribution.sketch.entries: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.distribution.sketch.entries }}
-    bullet.query.aggregation.distribution.max.points: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.distribution.max.points }}
-    bullet.query.aggregation.distribution.generated.points.rounding: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.distribution.generated.points.rounding }}
-    bullet.query.aggregation.top.k.sketch.entries: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.top.k.sketch.entries }}
-    bullet.query.aggregation.top.k.sketch.error.type: {{ .Values.bullet.sparkBackend.config.bullet.query.aggregation.top.k.sketch.error.type | quote }}
-    bullet.result.metadata.enable: {{ .Values.bullet.sparkBackend.config.bullet.result.metadata.enable }}
+    bullet.query.aggregation.count.distinct.sketch.entries: {{ .Values.sparkBackend.config.bullet.query.aggregation.count.distinct.sketch.entries }}
+    bullet.query.aggregation.group.sketch.entries: {{ .Values.sparkBackend.config.bullet.query.aggregation.group.sketch.entries }}
+    bullet.query.aggregation.distribution.sketch.entries: {{ .Values.sparkBackend.config.bullet.query.aggregation.distribution.sketch.entries }}
+    bullet.query.aggregation.distribution.max.points: {{ .Values.sparkBackend.config.bullet.query.aggregation.distribution.max.points }}
+    bullet.query.aggregation.distribution.generated.points.rounding: {{ .Values.sparkBackend.config.bullet.query.aggregation.distribution.generated.points.rounding }}
+    bullet.query.aggregation.top.k.sketch.entries: {{ .Values.sparkBackend.config.bullet.query.aggregation.top.k.sketch.entries }}
+    bullet.query.aggregation.top.k.sketch.error.type: {{ .Values.sparkBackend.config.bullet.query.aggregation.top.k.sketch.error.type | quote }}
+    bullet.result.metadata.enable: {{ .Values.sparkBackend.config.bullet.result.metadata.enable }}
     # Factory class to get new BulletRecords.
-    bullet.record.provider.class.name: {{ .Values.bullet.sparkBackend.config.bullet.record.provider.class.name | quote }}
-    {{- if .Values.bullet.sparkBackend.config.bullet.spark.dsl.data.producer.enable }}
+    bullet.record.provider.class.name: {{ .Values.sparkBackend.config.bullet.record.provider.class.name | quote }}
+    {{- if .Values.sparkBackend.config.bullet.spark.dsl.data.producer.enable }}
     ########################################################################################################################
     ################################################ Bullet DSL config #####################################################
     ########################################################################################################################
@@ -275,46 +275,46 @@ data:
     ########################################################################################################################
     ########################################################################################################################
     # The classpath to the BulletConnector to use
-    bullet.dsl.connector.class.name: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.class.name | quote }}
+    bullet.dsl.connector.class.name: {{ .Values.sparkBackend.config.bullet.dsl.connector.class.name | quote }}
     # The read timeout duration in ms (defaults to 0)
-    bullet.dsl.connector.read.timeout.ms: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.read.timeout.ms }}
+    bullet.dsl.connector.read.timeout.ms: {{ .Values.sparkBackend.config.bullet.dsl.connector.read.timeout.ms }}
     # Whether or not to asynchronously commit messages (defaults to true)
-    bullet.dsl.connector.async.commit.enable: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.async.commit.enable }}
+    bullet.dsl.connector.async.commit.enable: {{ .Values.sparkBackend.config.bullet.dsl.connector.async.commit.enable }}
 
     ###### KafkaConnector properties
 
     # The list of Kafka topics to subscribe to (required)
     bullet.dsl.connector.kafka.topics:
-    {{- range $topic := .Values.bullet.sparkBackend.config.bullet.dsl.connector.kafka.topics }}
+    {{- range $topic := .Values.sparkBackend.config.bullet.dsl.connector.kafka.topics }}
     - {{ $topic | quote }}
     {{- end }}
     # Whether or not the KafkaConsumer should seek to the end of its subscribed topics at initialization (defaults to false)
-    bullet.dsl.connector.kafka.start.at.end.enable: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.kafka.start.at.end.enable }}
+    bullet.dsl.connector.kafka.start.at.end.enable: {{ .Values.sparkBackend.config.bullet.dsl.connector.kafka.start.at.end.enable }}
 
     # Kafka properties (prefixed by "bullet.dsl.connector.kafka.") are passed to KafkaConsumer during construction with the
     # prefix removed. The properties below are required.
     # Properties found at: https://kafka.apache.org/20/javadoc/org/apache/kafka/clients/consumer/ConsumerConfig.html
-    bullet.dsl.connector.kafka.bootstrap.servers: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.kafka.bootstrap.servers | quote }}
-    bullet.dsl.connector.kafka.group.id: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.kafka.group.id | quote }}
-    bullet.dsl.connector.kafka.key.deserializer: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.kafka.key.deserializer | quote }}
-    bullet.dsl.connector.kafka.value.deserializer: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.kafka.value.deserializer | quote }}
-    bullet.dsl.connector.kafka.enable.auto.commit: {{ .Values.bullet.sparkBackend.config.bullet.dsl.connector.kafka.enable.auto.commit }}
+    bullet.dsl.connector.kafka.bootstrap.servers: {{ .Values.sparkBackend.config.bullet.dsl.connector.kafka.bootstrap.servers | quote }}
+    bullet.dsl.connector.kafka.group.id: {{ .Values.sparkBackend.config.bullet.dsl.connector.kafka.group.id | quote }}
+    bullet.dsl.connector.kafka.key.deserializer: {{ .Values.sparkBackend.config.bullet.dsl.connector.kafka.key.deserializer | quote }}
+    bullet.dsl.connector.kafka.value.deserializer: {{ .Values.sparkBackend.config.bullet.dsl.connector.kafka.value.deserializer | quote }}
+    bullet.dsl.connector.kafka.enable.auto.commit: {{ .Values.sparkBackend.config.bullet.dsl.connector.kafka.enable.auto.commit }}
 
     ###### BulletRecordConverter properties
 
     # The classpath to the BulletRecordConverter to use
-    bullet.dsl.converter.class.name: {{ .Values.bullet.sparkBackend.config.bullet.dsl.converter.class.name | quote }}
+    bullet.dsl.converter.class.name: {{ .Values.sparkBackend.config.bullet.dsl.converter.class.name | quote }}
     # The path to the schema file to use
-    bullet.dsl.converter.schema.file: {{ .Values.bullet.sparkBackend.config.bullet.dsl.converter.schema.file | quote }}
+    bullet.dsl.converter.schema.file: {{ .Values.sparkBackend.config.bullet.dsl.converter.schema.file | quote }}
     # Should type checking be performed for fields with type in the schema. It is useful to make sure that the types in
     # your source records match your expectations. You can set this to false when you are sure of your schema. This is
     # ignored if you do not provide a schema.
-    bullet.dsl.converter.schema.type.check.enable: {{ .Values.bullet.sparkBackend.config.bullet.dsl.converter.schema.type.check.enable }}
+    bullet.dsl.converter.schema.type.check.enable: {{ .Values.sparkBackend.config.bullet.dsl.converter.schema.type.check.enable }}
 
     ###### BulletDeserializer properties
 
     # The classpath to the BulletDeserializer to use
-    bullet.dsl.deserializer.class.name: {{ .Values.bullet.sparkBackend.config.bullet.dsl.deserializer.class.name | quote }}
+    bullet.dsl.deserializer.class.name: {{ .Values.sparkBackend.config.bullet.dsl.deserializer.class.name | quote }}
     {{- end }}
   dsl_schema.json: |-
-{{ .Values.bullet.sparkBackend.dsl.schema | indent 4 }}
+{{ .Values.sparkBackend.dsl.schema | indent 4 }}

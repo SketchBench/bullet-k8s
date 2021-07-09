@@ -1,15 +1,21 @@
 apiVersion: v2
 name: bullet
-version: 0.1.0
-appVersion: 1.0.4
-description: Bullet is a real-time query engine for very large data streams
+description: A real-time query engine for very large data streams
 type: application
+version: 0.1.0
+appVersion: "1.0.4"
 home: https://github.com/SketchBench/bullet-k8s
 # icon:
 maintainers:
   - name: FraBle
-    email: contact@frank-blechschmidt.com
-    url: https://frank-blechschmidt.com
+    email: frankb2@illinois.edu
+    url: https://github.com/FraBle
+  - name: makamhareesh
+    email: hmakam2@illinois.edu
+    url: https://github.com/makamhareesh
+  - name: mukrpe
+    email: mkp5@illinois.edu
+    url: https://github.com/mukrpe
 sources:
   - https://github.com/bullet-db
   - https://bullet-db.github.io
@@ -24,6 +30,7 @@ keywords:
   - storm
   - kafka
   - sketch
+  - benchmark
 dependencies:
   - name: kafka
     version: 13.0.2
@@ -31,39 +38,23 @@ dependencies:
     alias: pubsub
     import-values:
       - child: service
-        parent: bullet.webservice.pubsub
-  - name: zookeeper
-    version: 7.0.4
-    repository: https://charts.bitnami.com/bitnami
-    alias: pubsub-zk
+        parent: pubsub
   - name: kafdrop
     version: 0.2.3
     repository: https://bedag.github.io/helm-charts
-    alias: pubsub-monit
-  - name: kafka
-    version: 13.0.2
-    repository: https://charts.bitnami.com/bitnami
-    alias: data-ingestion
-    import-values:
-      - child: service
-        parent: bullet.dataIngestionTester.kafka
-  - name: zookeeper
-    version: 7.0.4
-    repository: https://charts.bitnami.com/bitnami
-    alias: data-ingestion-zk
-  - name: kafdrop
-    version: 0.2.3
-    repository: https://bedag.github.io/helm-charts
-    alias: data-ingestion-monit
+    alias: pubsubMonit
+    condition: pubsubMonit.enabled
   - name: spark
     version: 5.5.3
     repository: https://charts.bitnami.com/bitnami
+    condition: spark.enabled
     import-values:
       - child: master
-        parent: bullet.sparkBackend.cluster
+        parent: sparkBackend.cluster
   - name: hdfs
     version: 0.1.10
     repository: https://gradiant.github.io/charts
+    condition: hdfs.enabled
     import-values:
       - child: nameNode
-        parent: bullet.sparkBackend.hdfs
+        parent: sparkBackend.hdfs

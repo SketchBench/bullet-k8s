@@ -13,9 +13,9 @@ spec:
   ports:
   - name: driver
     protocol: TCP
-    port: {{ .Values.bullet.sparkBackend.driver.port }}
-    targetPort: {{ .Values.bullet.sparkBackend.driver.port }}
+    port: {{ .Values.sparkBackend.driver.port }}
+    targetPort: {{ .Values.sparkBackend.driver.port }}
   - name: block-manager
     protocol: TCP
-    port: {{ .Values.bullet.sparkBackend.driver.blockManagerPort }}
-    targetPort: {{ .Values.bullet.sparkBackend.driver.blockManagerPort }}
+    port: {{ .Values.sparkBackend.driver.blockManagerPort }}
+    targetPort: {{ .Values.sparkBackend.driver.blockManagerPort }}
