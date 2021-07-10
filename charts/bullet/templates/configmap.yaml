@@ -294,7 +294,7 @@ data:
     # Kafka properties (prefixed by "bullet.dsl.connector.kafka.") are passed to KafkaConsumer during construction with the
     # prefix removed. The properties below are required.
     # Properties found at: https://kafka.apache.org/20/javadoc/org/apache/kafka/clients/consumer/ConsumerConfig.html
-    bullet.dsl.connector.kafka.bootstrap.servers: {{ .Values.sparkBackend.config.bullet.dsl.connector.kafka.bootstrap.servers | quote }}
+    bullet.dsl.connector.kafka.bootstrap.servers: {{ printf "%s-%s" .Release.Name (join "," .Values.sparkBackend.config.bullet.dsl.connector.kafka.bootstrap.servers) | quote }}
     bullet.dsl.connector.kafka.group.id: {{ .Values.sparkBackend.config.bullet.dsl.connector.kafka.group.id | quote }}
     bullet.dsl.connector.kafka.key.deserializer: {{ .Values.sparkBackend.config.bullet.dsl.connector.kafka.key.deserializer | quote }}
     bullet.dsl.connector.kafka.value.deserializer: {{ .Values.sparkBackend.config.bullet.dsl.connector.kafka.value.deserializer | quote }}
