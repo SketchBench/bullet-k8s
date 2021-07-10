@@ -33,7 +33,7 @@ keywords:
   - benchmark
 dependencies:
   - name: kafka
-    version: 13.0.2
+    version: 13.0.3
     repository: https://charts.bitnami.com/bitnami
     alias: pubsub
     import-values:
@@ -45,7 +45,7 @@ dependencies:
     alias: pubsubMonit
     condition: pubsubMonit.enabled
   - name: spark
-    version: 5.5.3
+    version: 5.6.1
     repository: https://charts.bitnami.com/bitnami
     condition: spark.enabled
     import-values:

@@ -24,6 +24,12 @@ jobs:
         with:
           version: v3.6.1
 
+      - name: Add Helm repos
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add bedag https://bedag.github.io/helm-charts
+          helm repo add timescale https://charts.timescale.com
+
       # Optional step if GPG signing is used
       - name: Prepare GPG key
         run: |

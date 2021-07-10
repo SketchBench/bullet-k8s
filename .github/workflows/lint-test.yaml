@@ -4,7 +4,6 @@ on: pull_request
 
 jobs:
   lint-test:
-    if: false # todo: remove
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,9 +36,8 @@ jobs:
             echo "::set-output name=changed::true"
           fi
 
-      # Disable until issue is resolved: https://github.com/helm/chart-testing/issues/346
-      # - name: Run chart-testing (lint)
-      #   run: ct lint --config ct.yaml
+      - name: Run chart-testing (lint)
+        run: ct lint --config ct.yaml
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.1.0

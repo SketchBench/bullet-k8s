@@ -1,15 +1,15 @@
 dependencies:
 - name: kafka
   repository: https://charts.bitnami.com/bitnami
-  version: 13.0.2
+  version: 13.0.3
 - name: kafdrop
   repository: https://bedag.github.io/helm-charts
   version: 0.2.3
 - name: spark
   repository: https://charts.bitnami.com/bitnami
-  version: 5.5.3
+  version: 5.6.1
 - name: hdfs
   repository: https://gradiant.github.io/charts
   version: 0.1.10
-digest: sha256:71b2b3a127f2b0dba3dbf93644ebf979e71c257bc5790d1fff46faab282e52b7
-generated: "2021-07-09T01:05:48.2913757-07:00"
+digest: sha256:ab0fd94a42a78cfe62f8530f3c63f8482f7da1a924165dd6dd21a7fdc1733fe6
+generated: "2021-07-09T23:33:17.8679303-07:00"

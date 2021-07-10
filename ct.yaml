@@ -6,4 +6,6 @@ chart-repos:
   - bitnami=https://charts.bitnami.com/bitnami
   - bedag=https://bedag.github.io/helm-charts
   - gradiant=https://gradiant.github.io/charts
-helm-extra-args: --timeout 1200s
+helm-extra-args: --timeout 600s
+# Excluded until issue is resolved: https://github.com/helm/chart-testing/issues/346
+excluded-charts: bullet
