@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "bullet.fullname" . }}-spark-backend-ui
+  labels:
+    {{- include "bullet.labels" . | nindent 4 }}
+    app.kubernetes.io/component: spark-backend
+spec:
+  selector:
+    app.kubernetes.io/component: spark-backend
+    {{- include "bullet.selectorLabels" . | nindent 4 }}
+  type: {{ .Values.sparkBackend.service.type }}
+  ports:
+  - name: spark-ui
+    protocol: TCP
+    port: {{ .Values.sparkBackend.service.port }}
+    targetPort: 4040
