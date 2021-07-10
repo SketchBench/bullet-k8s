@@ -146,7 +146,8 @@ sparkBackend:
                 end:
                   enable: false
             bootstrap:
-              servers: "localhost:9092"
+              servers:
+                - localhost:9092
             group:
               id: "bullet-consumer-group"
             key:
