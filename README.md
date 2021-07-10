@@ -2,6 +2,8 @@
 
 Helm Chart for [Bullet](https://bullet-db.github.io/).
 
+    helm repo add bullet https://sketchbench.github.io/bullet-k8s/
+
 ## Resources
 
 ### Forward Kubernetes Services to localhost
