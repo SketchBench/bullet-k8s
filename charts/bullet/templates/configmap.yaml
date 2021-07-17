@@ -171,7 +171,7 @@ data:
     bullet.spark.data.producer.parallelism: {{ .Values.sparkBackend.config.bullet.spark.data.producer.parallelism }}
 
     # This is the checkpoint directory. If you are running your Spark on a cluster, the directory must be an HDFS path.
-    bullet.spark.checkpoint.dir: {{ printf "hdfs://%s-hdfs:%g%s" .Release.Name .Values.sparkBackend.hdfs.port .Values.sparkBackend.config.bullet.spark.checkpoint.dir | quote}}
+    bullet.spark.checkpoint.dir: {{ printf "hdfs://%s-hdfs-namenodes:%g%s" .Release.Name .Values.sparkBackend.hdfs.ports.clientRpc .Values.sparkBackend.config.bullet.spark.checkpoint.dir | quote}}
 
     # If true, Bullet Spark recovers context from checkpoint files when restarting.
     # Otherwise Bullet Spark creates a new context.

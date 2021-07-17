@@ -64,7 +64,7 @@ webservice:
 sparkBackend:
   jar: /opt/bitnami/spark/jars/bullet-spark-standalone.jar
   otherJars: /opt/bitnami/spark/jars/bullet-kafka-fat.jar,/opt/bitnami/spark/jars/bullet-dsl.jar,/opt/bitnami/spark/jars/bullet-spark-example.jar
-  hdfsUser: hdfs
+  hdfsUser: hadoop
   configDir: /bullet/configs
   schemaDir: /bullet/schemas
   executorCores: 2
@@ -231,7 +231,7 @@ sparkBackend:
   dsl:
     schema: ""
   image:
-    repository: sketchbench/bullet-spark
+    repository: sketchbench/bullet-spark-3.0
     tag: "1.0.4"
     pullPolicy: IfNotPresent
   imagePullSecrets: []
@@ -252,7 +252,7 @@ sparkBackend:
 spark:
   enabled: true
   image:
-    repository: sketchbench/bullet-spark
+    repository: sketchbench/bullet-spark-3.0
     tag: "1.0.4"
     pullPolicy: IfNotPresent
   worker:
@@ -260,6 +260,11 @@ spark:
     coreLimit: 3
 hdfs:
   enabled: true
+  config:
+    hdfsSite:
+      # https://github.com/gchq/gaffer-docker/pull/152
+      dfs.namenode.datanode.registration.ip-hostname-check: false
+
 pubsubMonit:
   enabled: true
   nameOverride: pubsub-monit
