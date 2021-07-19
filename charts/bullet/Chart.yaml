@@ -2,7 +2,7 @@ apiVersion: v2
 name: bullet
 description: A real-time query engine for very large data streams
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "1.0.4"
 home: https://github.com/SketchBench/bullet-k8s
 # icon:
