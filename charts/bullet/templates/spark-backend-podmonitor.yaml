@@ -2,24 +2,15 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: {{ include "common.names.fullname" . }}-spark-backend
+  name: {{ include "bullet.fullname" . }}-spark-backend
   {{- if .Values.sparkBackend.metrics.podMonitor.namespace }}
   namespace: {{ .Values.sparkBackend.metrics.podMonitor.namespace }}
   {{- else }}
   namespace: {{ .Release.Namespace }}
   {{- end }}
   labels:
-    {{- include "common.labels.standard" . | nindent 4 }}
+    {{- include "bullet.labels" . | nindent 4 }}
     app.kubernetes.io/component: metrics
-    {{- if .Values.sparkBackend.metrics.podMonitor.additionalLabels }}
-    {{- include "common.tplvalues.render" (dict "value" .Values.sparkBackend.metrics.podMonitor.additionalLabels "context" $) | nindent 4 }}
-    {{- end }}
-    {{- if .Values.commonLabels }}
-    {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
-    {{- end }}
-  {{- if .Values.commonAnnotations }}
-  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
-  {{- end }}
 spec:
   podMetricsEndpoints:
     - port: "4040"
@@ -44,5 +35,7 @@ spec:
     matchNames:
       - {{ .Release.Namespace }}
   selector:
-    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+    matchLabels:
+      {{- include "bullet.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: spark-backend
 {{- end }}
