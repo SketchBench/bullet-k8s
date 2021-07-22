@@ -57,6 +57,10 @@ spec:
             - {{ printf "spark.executor.memory=%s" .Values.sparkBackend.executorMemory }}
             - --conf
             - {{ printf "spark.ui.prometheus.enabled=%t" .Values.sparkBackend.metrics.enabled }}
+            - --conf
+            - {{ printf "spark.metrics.appStatusSource.enabled=%t" .Values.sparkBackend.metrics.enabled }}
+            - --conf
+            - {{ printf "spark.sql.streaming.metricsEnabled=%t" .Values.sparkBackend.metrics.enabled }}
             - --class
             - com.yahoo.bullet.spark.BulletSparkStreamingMain
             - --jars
