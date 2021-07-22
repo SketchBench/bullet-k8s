@@ -7,6 +7,69 @@ entries:
         url: https://keybase.io/frable90/pgp_keys.asc
     apiVersion: v2
     appVersion: 1.0.4
+    created: "2021-07-22T07:40:16.783493884Z"
+    dependencies:
+    - alias: pubsub
+      import-values:
+      - child: service
+        parent: pubsub
+      name: kafka
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.0.3
+    - alias: pubsubMonit
+      condition: pubsubMonit.enabled
+      name: kafdrop
+      repository: https://bedag.github.io/helm-charts
+      version: 0.2.3
+    - condition: spark.enabled
+      import-values:
+      - child: master
+        parent: sparkBackend.cluster
+      name: spark
+      repository: https://charts.bitnami.com/bitnami
+      version: 5.6.2
+    - condition: hdfs.enabled
+      import-values:
+      - child: namenode
+        parent: sparkBackend.hdfs
+      name: hdfs
+      repository: https://gchq.github.io/gaffer-docker
+      version: 0.12.0
+    description: A real-time query engine for very large data streams
+    digest: c950241b7f6303e81114baea0eede7ca78ffa971691ee92eb5f1adeb54a34ec2
+    home: https://github.com/SketchBench/bullet-k8s
+    keywords:
+    - apache
+    - bullet
+    - spark
+    - storm
+    - kafka
+    - sketch
+    - benchmark
+    maintainers:
+    - email: frankb2@illinois.edu
+      name: FraBle
+      url: https://github.com/FraBle
+    - email: hmakam2@illinois.edu
+      name: makamhareesh
+      url: https://github.com/makamhareesh
+    - email: mkp5@illinois.edu
+      name: mukrpe
+      url: https://github.com/mukrpe
+    name: bullet
+    sources:
+    - https://github.com/bullet-db
+    - https://bullet-db.github.io
+    type: application
+    urls:
+    - https://github.com/SketchBench/bullet-k8s/releases/download/bullet-0.3.3/bullet-0.3.3.tgz
+    version: 0.3.3
+  - annotations:
+      artifacthub.io/signKey: |
+        fingerprint: F6F77B76587337D518F42D9CE720A2903AF94931
+        url: https://keybase.io/frable90/pgp_keys.asc
+    apiVersion: v2
+    appVersion: 1.0.4
     created: "2021-07-22T06:56:59.725900233Z"
     dependencies:
     - alias: pubsub
@@ -379,4 +442,4 @@ entries:
     urls:
     - https://github.com/SketchBench/bullet-k8s/releases/download/bullet-0.1.0/bullet-0.1.0.tgz
     version: 0.1.0
-generated: "2021-07-22T06:56:59.725923535Z"
+generated: "2021-07-22T07:40:16.783528985Z"
