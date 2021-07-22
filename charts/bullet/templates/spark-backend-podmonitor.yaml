@@ -13,7 +13,7 @@ metadata:
     app.kubernetes.io/component: metrics
 spec:
   podMetricsEndpoints:
-    - port: "4040"
+    - port: spark-ui
       path: /metrics/executors/prometheus/
       {{- if .Values.sparkBackend.metrics.podMonitor.interval }}
       interval: {{ .Values.sparkBackend.metrics.podMonitor.interval }}
