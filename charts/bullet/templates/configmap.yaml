@@ -316,5 +316,11 @@ data:
     # The classpath to the BulletDeserializer to use
     bullet.dsl.deserializer.class.name: {{ .Values.sparkBackend.config.bullet.dsl.deserializer.class.name | quote }}
     {{- end }}
+  metrics.properties: |-
+    # Example configuration for PrometheusServlet
+    *.sink.prometheusServlet.class=org.apache.spark.metrics.sink.PrometheusServlet
+    *.sink.prometheusServlet.path=/metrics/prometheus
+    master.sink.prometheusServlet.path=/metrics/master/prometheus
+    applications.sink.prometheusServlet.path=/metrics/applications/prometheus
   dsl_schema.json: |-
 {{ .Values.sparkBackend.dsl.schema | indent 4 }}

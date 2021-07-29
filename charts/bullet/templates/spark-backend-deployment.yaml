@@ -96,6 +96,11 @@ spec:
             - name: config
               mountPath: {{ printf "%s/dsl_schema.json" .Values.sparkBackend.schemaDir }}
               subPath: dsl_schema.json
+            {{- if .Values.sparkBackend.metrics.enabled }}
+            - name: config
+              mountPath: /opt/bitnami/spark/conf/metrics.properties
+              subPath: metrics.properties
+            {{- end }}
       {{- with .Values.sparkBackend.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
