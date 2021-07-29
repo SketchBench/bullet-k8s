@@ -67,8 +67,6 @@ sparkBackend:
   hdfsUser: hadoop
   configDir: /bullet/configs
   schemaDir: /bullet/schemas
-  executorCores: 2
-  executorMemory: 3G
   metrics:
     enabled: false
     podMonitor:
