@@ -2,7 +2,7 @@ apiVersion: v2
 name: bullet
 description: A real-time query engine for very large data streams
 type: application
-version: 0.3.3
+version: 0.4.0
 appVersion: "1.0.4"
 home: https://github.com/SketchBench/bullet-k8s
 # icon:
@@ -33,7 +33,7 @@ keywords:
   - benchmark
 dependencies:
   - name: kafka
-    version: 13.0.3
+    version: 13.1.1
     repository: https://charts.bitnami.com/bitnami
     alias: pubsub
     import-values:
@@ -45,14 +45,14 @@ dependencies:
     alias: pubsubMonit
     condition: pubsubMonit.enabled
   - name: spark
-    version: 5.6.2
+    version: 5.7.0
     repository: https://charts.bitnami.com/bitnami
     condition: spark.enabled
     import-values:
       - child: master
         parent: sparkBackend.cluster
   - name: hdfs
-    version: 0.12.0
+    version: 0.13.0
     repository: https://gchq.github.io/gaffer-docker
     condition: hdfs.enabled
     import-values:
