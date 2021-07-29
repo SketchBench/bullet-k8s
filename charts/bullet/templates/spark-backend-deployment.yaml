@@ -7,6 +7,8 @@ metadata:
     app.kubernetes.io/component: spark-backend
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/component: spark-backend
@@ -52,15 +54,14 @@ spec:
             - --conf
             - spark.driver.bindAddress=0.0.0.0
             - --conf
-            - {{ printf "spark.executor.cores=%g" .Values.sparkBackend.executorCores }}
-            - --conf
-            - {{ printf "spark.executor.memory=%s" .Values.sparkBackend.executorMemory }}
-            - --conf
             - {{ printf "spark.ui.prometheus.enabled=%t" .Values.sparkBackend.metrics.enabled }}
             - --conf
             - {{ printf "spark.metrics.appStatusSource.enabled=%t" .Values.sparkBackend.metrics.enabled }}
             - --conf
             - {{ printf "spark.sql.streaming.metricsEnabled=%t" .Values.sparkBackend.metrics.enabled }}
+            {{- range $conf := .Values.sparkBackend.driver.confs }}
+            - {{ $conf }}
+            {{- end }}
             - --class
             - com.yahoo.bullet.spark.BulletSparkStreamingMain
             - --jars
@@ -95,6 +96,11 @@ spec:
             - name: config
               mountPath: {{ printf "%s/dsl_schema.json" .Values.sparkBackend.schemaDir }}
               subPath: dsl_schema.json
+            {{- if .Values.sparkBackend.metrics.enabled }}
+            - name: config
+              mountPath: /opt/bitnami/spark/conf/metrics.properties
+              subPath: metrics.properties
+            {{- end }}
       {{- with .Values.sparkBackend.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

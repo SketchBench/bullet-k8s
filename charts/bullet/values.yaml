@@ -67,8 +67,6 @@ sparkBackend:
   hdfsUser: hadoop
   configDir: /bullet/configs
   schemaDir: /bullet/schemas
-  executorCores: 2
-  executorMemory: 3G
   metrics:
     enabled: false
     podMonitor:
@@ -256,6 +254,7 @@ sparkBackend:
   driver:
     port: 4041
     blockManagerPort: 4042
+    confs:
 ### External Dependencies ###
 spark:
   enabled: true
