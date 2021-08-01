@@ -322,5 +322,19 @@ data:
     *.sink.prometheusServlet.path=/metrics/prometheus
     master.sink.prometheusServlet.path=/metrics/master/prometheus
     applications.sink.prometheusServlet.path=/metrics/applications/prometheus
+    {{- if and .Values.sparkBackend.metrics.enabled .Values.sparkBackend.metrics.graphiteExporter.enabled }}
+    # Example configuration for Graphite sink
+    *.sink.graphite.class=org.apache.spark.metrics.sink.GraphiteSink
+    *.sink.graphite.host={{ .Values.sparkBackend.metrics.graphiteExporter.host }}
+    *.sink.graphite.port={{ .Values.sparkBackend.metrics.graphiteExporter.port }}
+    *.sink.graphite.period={{ .Values.sparkBackend.metrics.graphiteExporter.periodSeconds }}
+    *.sink.graphite.unit=seconds
+    #*.sink.graphite.prefix=<optional_value>
+    # Enable JvmSource
+    master.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+    worker.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+    driver.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+    executor.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+    {{- end }}
   dsl_schema.json: |-
 {{ .Values.sparkBackend.dsl.schema | indent 4 }}

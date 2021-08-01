@@ -75,6 +75,9 @@ sparkBackend:
       namespace: ""
       interval: 30s
       scrapeTimeout:
+    graphiteExporter:
+      enabled: false
+      periodSeconds: 30
   config:
     # See https://github.com/bullet-db/bullet-spark/blob/master/src/main/resources/bullet_spark_defaults.yaml
     ### Bullet ###
@@ -266,7 +269,7 @@ spark:
     replicaCount: 3
     coreLimit: 3
 hdfs:
-  enabled: true
+  enabled: false
   config:
     hdfsSite:
       # https://github.com/gchq/gaffer-docker/pull/152
