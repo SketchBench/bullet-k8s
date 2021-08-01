@@ -325,7 +325,7 @@ data:
     {{- if and .Values.sparkBackend.metrics.enabled .Values.sparkBackend.metrics.graphiteExporter.enabled }}
     # Example configuration for Graphite sink
     *.sink.graphite.class=org.apache.spark.metrics.sink.GraphiteSink
-    *.sink.graphite.host={{ .Values.sparkBackend.metrics.graphiteExporter.host }}
+    *.sink.graphite.host={{ printf "%s-%s" .Release.Name .Values.sparkBackend.metrics.graphiteExporter.host}}
     *.sink.graphite.port={{ .Values.sparkBackend.metrics.graphiteExporter.port }}
     *.sink.graphite.period={{ .Values.sparkBackend.metrics.graphiteExporter.periodSeconds }}
     *.sink.graphite.unit=seconds
