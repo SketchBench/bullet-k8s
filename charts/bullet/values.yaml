@@ -258,6 +258,13 @@ sparkBackend:
     port: 4041
     blockManagerPort: 4042
     confs:
+      - --conf
+      - spark.cores.max=6
+      - --conf
+      - spark.executor.cores=1
+      - --conf
+      - spark.executor.memory=2G
+
 ### External Dependencies ###
 spark:
   enabled: true
@@ -267,7 +274,23 @@ spark:
     pullPolicy: IfNotPresent
   worker:
     replicaCount: 3
-    coreLimit: 3
+    coreLimit: 2
+    resources:
+      requests:
+        memory: "5Gi"
+        cpu: "2.25"
+      limits:
+        memory: "5Gi"
+        cpu: "2.25"
+  master:
+    resources:
+      requests:
+        memory: "5Gi"
+        cpu: "2.25"
+      limits:
+        memory: "5Gi"
+        cpu: "2.25"
+
 hdfs:
   enabled: false
   config:
